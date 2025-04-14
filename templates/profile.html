@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        form {
+            max-width: 600px;
+            margin: auto;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Edit Profile</h1>
+    <form method="POST">
+        <label for="bio">Bio:</label>
+        <textarea id="bio" name="bio" placeholder="Write something about yourself">{{ user[1] }}</textarea>
+        <label for="skills">Skills:</label>
+        <input type="text" id="skills" name="skills" placeholder="Enter your skills" value="{{ user[2] }}">
+        <label for="contact">Contact:</label>
+        <input type="text" id="contact" name="contact" placeholder="Enter your contact info" value="{{ user[3] }}">
+        <label for="education">Education:</label>
+        <textarea id="education" name="education" placeholder="Enter your education details">{{ user[4] }}</textarea>
+        <label for="experience">Experience:</label>
+        <textarea id="experience" name="experience" placeholder="Enter your work experience">{{ user[5] }}</textarea>
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('/static/images/stock_vector.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+        }
+        .dropdown-menu {
+            position: fixed;
+            top: -200px; /* Hidden by default */
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: top 0.3s; /* Smooth transition for toggling */
+            z-index: 1000;
+        }
+        .dropdown-menu a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            margin: 10px 0;
+        }
+        .dropdown-menu a:hover {
+            text-decoration: underline;
+        }
+        .menu-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            border: none;
+        }
+        .menu-btn:hover {
+            background-color: #0056b3;
+        }
+        .content {
+            margin: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.6); /* Semi-transparent background for content */
+            border-radius: 8px;
+        }
+        .recommendations {
+            margin-top: 20px;
+        }
+        .course {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+            color: white;
+        }
+        .course img {
+            width: 150px;
+            height: 150px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .course p {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+    </style>
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown-menu');
+            // Toggle the dropdown menu's visibility
+            if (dropdown.style.top === '0px') {
+                dropdown.style.top = '-200px'; // Hide the dropdown
+            } else {
+                dropdown.style.top = '0px'; // Show the dropdown
+            }
+        }
+    </script>
+</head>
+<body>
+    <button class="menu-btn" onclick="toggleDropdown()">☰</button>
+    <div id="dropdown-menu" class="dropdown-menu">
+        <h2>Menu</h2>
+        <a href="/profile">Edit Profile</a> <!-- Link to the profile page -->
+        <a href="/certificates">Certificates</a>
+        <a href="/settings">Settings</a> <!-- Link to the settings page -->
+        <a href="/logout">Logout</a>
+    </div>
+    <div class="content">
+        <h1>Welcome to Your Dashboard</h1>
+        <p>Your skills: {{ user_skills }}</p>
+        <div class="recommendations">
+            <h2>Skill Recommendations</h2>
+            <div class="course">
+                <img src="/static/images/c.png" alt="C">
+                <p>C Programming</p>
+            </div>
+            <div class="course">
+                <img src="/static/images/c++.png" alt="C++">
+                <p>C++ Programming</p>
+            </div>
+            <div class="course">
+                <img src="/static/images/python.png" alt="Python">
+                <p>Python Programming</p>
+            </div>
+            <div class="course">
+                <img src="/static/images/java.png" alt="Java">
+                <p>Java Programming</p>
+            </div>
+            <div class="course">
+                <img src="/static/images/js.jpeg" alt="JavaScript">
+                <p>JavaScript Programming</p>
+            </div>
+            <div class="course">
+                <img src="/static/images/aiml.jpeg" alt="AI/ML">
+                <p>AI & Machine Learning</p>
+            </div>
+            <div class="course">
+                <img src="/static/images/ds.jpeg" alt="Data Science">
+                <p>Data Science</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
