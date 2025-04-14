@@ -3,26 +3,30 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Mail, Message
 import mysql.connector
 import secrets
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'your_secret_key')
 
 # Database connection
 db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="VSMrvu@2027",
-    database="skill_sharing"
+    host=os.getenv('DB_HOST', 'localhost'),
+    user=os.getenv('DB_USER', 'root'),
+    password=os.getenv('DB_PASSWORD', 'password'),
+    database=os.getenv('DB_NAME', 'skill_sharing')
 )
 cursor = db.cursor()
 
 # Flask-Mail configuration
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = 'shrimarichetty@gmail.com'  # Replace with your Gmail address
-app.config['MAIL_PASSWORD'] = 'VSM@2005'    # Replace with the generated App Password
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
+app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 587))
+app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'True') == 'True'
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 mail = Mail(app)
 
 # Routes
@@ -63,25 +67,25 @@ def register():
 
 @app.route('/verify_email/<token>')
 def verify_email(token):
+    # Check if the token exists in the database
     cursor.execute("SELECT id FROM users WHERE verification_token = %s", (token,))
     user = cursor.fetchone()
     if user:
-        cursor.execute("UPDATE users SET is_verified = %s, verification_token = NULL WHERE id = %s", (True, user[0]))
+        # Update the user's email as verified
+        cursor.execute("UPDATE users SET is_verified = 1, verification_token = NULL WHERE verification_token = %s", (token,))
         db.commit()
-        flash('Your email has been verified. You can now log in.')
+        flash('Your email has been verified. You can now log in.', 'success')
         return redirect(url_for('login'))
     else:
-        flash('Invalid or expired verification link.')
-        return redirect(url_for('register'))
+        flash('Invalid or expired verification link.', 'error')
+        return redirect(url_for('profile'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        
-        # Check if the email exists in the database
-        cursor.execute("SELECT id, password, is_verified FROM users WHERE email = %s", (email,))
+        cursor.execute("SELECT id, password FROM users WHERE email = %s", (email,))
         user = cursor.fetchone()
         
         if not user:
@@ -92,13 +96,9 @@ def login():
             flash('Incorrect password. Please try again.', 'error')
             return redirect(url_for('login'))
         
-        if not user[2]:  # Check if the user is verified
-            flash('Please verify your email before logging in.', 'error')
-            return redirect(url_for('login'))
-        
-        # If everything is correct, log the user in
         session['user_id'] = user[0]
-        return redirect(url_for('dashboard'))  # Redirect to the dashboard after login
+        flash('Login successful!', 'success')
+        return redirect(url_for('dashboard'))
     
     return render_template('login.html')
 
@@ -138,32 +138,73 @@ def logout():
     session.pop('user_id', None)
     return redirect(url_for('main_page'))  # Redirect to main page after logout
 
-@app.route('/dashboard')
+@app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    cursor.execute("SELECT skills FROM users WHERE id = %s", (session['user_id'],))
-    user_skills = cursor.fetchone()[0]
+    
+    if request.method == 'POST' and 'verify_email' in request.form:
+        # Handle email verification
+        cursor.execute("SELECT email, is_verified FROM users WHERE id = %s", (session['user_id'],))
+        user = cursor.fetchone()
+        if user and not user[1]:  # If email is not verified
+            verification_token = secrets.token_urlsafe(16)
+            cursor.execute("UPDATE users SET verification_token = %s WHERE id = %s", (verification_token, session['user_id']))
+            db.commit()
+            verification_link = url_for('verify_email', token=verification_token, _external=True)
+            msg = Message('Verify Your Email', sender=os.getenv('MAIL_USERNAME'), recipients=[user[0]])
+            msg.body = f"Hi,\n\nPlease verify your email by clicking the link below:\n{verification_link}\n\nThank you!"
+            try:
+                mail.send(msg)
+                flash('Verification email sent. Please check your inbox.', 'success')
+            except Exception as e:
+                flash(f'Failed to send verification email: {e}', 'error')
+        else:
+            flash('Your email is already verified.', 'info')
+    
+    cursor.execute("SELECT name, email, is_verified FROM users WHERE id = %s", (session['user_id'],))
+    user = cursor.fetchone()
     recommendations = ["C Programming", "C++ Programming", "Python Programming", "Java Programming", "JavaScript Programming", "AI & Machine Learning", "Data Science"]
-    return render_template('dashboard.html', user_skills=user_skills, recommendations=recommendations)
+    return render_template('dashboard.html', user=user, recommendations=recommendations)
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
     if 'user_id' not in session:
         return redirect(url_for('login'))
     if request.method == 'POST':
-        bio = request.form['bio']
-        skills = request.form['skills']
-        contact = request.form['contact']
-        education = request.form['education']
-        experience = request.form['experience']
-        cursor.execute(
-            "UPDATE users SET bio = %s, skills = %s, contact = %s, education = %s, experience = %s WHERE id = %s",
-            (bio, skills, contact, education, experience, session['user_id'])
-        )
-        db.commit()
+        if 'verify_email' in request.form:
+            # Handle email verification
+            cursor.execute("SELECT email, is_verified FROM users WHERE id = %s", (session['user_id'],))
+            user = cursor.fetchone()
+            if user and not user[1]:  # If email is not verified
+                verification_token = secrets.token_urlsafe(16)
+                cursor.execute("UPDATE users SET verification_token = %s WHERE id = %s", (verification_token, session['user_id']))
+                db.commit()
+                verification_link = url_for('verify_email', token=verification_token, _external=True)
+                msg = Message('Verify Your Email', sender=os.getenv('MAIL_USERNAME'), recipients=[user[0]])
+                msg.body = f"Hi,\n\nPlease verify your email by clicking the link below:\n{verification_link}\n\nThank you!"
+                try:
+                    mail.send(msg)
+                    flash('Verification email sent. Please check your inbox.', 'success')
+                except Exception as e:
+                    flash(f'Failed to send verification email: {e}', 'error')
+            else:
+                flash('Your email is already verified.', 'info')
+        else:
+            # Handle profile updates
+            bio = request.form['bio']
+            skills = request.form['skills']
+            contact = request.form['contact']
+            education = request.form['education']
+            experience = request.form['experience']
+            cursor.execute(
+                "UPDATE users SET bio = %s, skills = %s, contact = %s, education = %s, experience = %s WHERE id = %s",
+                (bio, skills, contact, education, experience, session['user_id'])
+            )
+            db.commit()
+            flash('Profile updated successfully.', 'success')
     cursor.execute(
-        "SELECT name, bio, skills, contact, education, experience FROM users WHERE id = %s",
+        "SELECT name, email, bio, skills, contact, education, experience, is_verified FROM users WHERE id = %s",
         (session['user_id'],)
     )
     user = cursor.fetchone()

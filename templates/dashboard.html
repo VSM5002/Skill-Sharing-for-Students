@@ -10,48 +10,44 @@
             background: url('/static/images/stock_vector.jpg') no-repeat center center fixed;
             background-size: cover;
             color: white;
+            display: flex;
+            flex-direction: row;
+            height: 100vh;
+            overflow: hidden;
         }
-        .dropdown-menu {
-            position: fixed;
-            top: -200px; /* Hidden by default */
-            left: 0;
-            width: 100%;
+        .sidebar {
+            width: 220px;
             background-color: #333;
             color: white;
             padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: top 0.3s; /* Smooth transition for toggling */
-            z-index: 1000;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
         }
-        .dropdown-menu a {
+        .sidebar a, .sidebar button {
             color: white;
             text-decoration: none;
             display: block;
             margin: 10px 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-align: left;
+            font-size: 16px;
         }
-        .dropdown-menu a:hover {
+        .sidebar a:hover, .sidebar button:hover {
             text-decoration: underline;
         }
-        .menu-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 24px;
-            cursor: pointer;
-            background-color: #007bff;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 4px;
-            border: none;
-        }
-        .menu-btn:hover {
-            background-color: #0056b3;
-        }
         .content {
-            margin: 20px;
+            margin-left: 250px;
             padding: 20px;
-            background: rgba(0, 0, 0, 0.6); /* Semi-transparent background for content */
+            flex-grow: 1;
+            background: rgba(0, 0, 0, 0.6);
             border-radius: 8px;
+            overflow-y: auto;
+            height: 100%;
         }
         .recommendations {
             margin-top: 20px;
@@ -72,26 +68,33 @@
             margin-top: 10px;
             font-size: 16px;
         }
-    </style>
-    <script>
-        function toggleDropdown() {
-            const dropdown = document.getElementById('dropdown-menu');
-            // Toggle the dropdown menu's visibility
-            if (dropdown.style.top === '0px') {
-                dropdown.style.top = '-200px'; // Hide the dropdown
-            } else {
-                dropdown.style.top = '0px'; // Show the dropdown
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            .content {
+                margin-left: 200px;
             }
         }
-    </script>
+        @media (max-width: 480px) {
+            .sidebar {
+                width: 150px;
+            }
+            .content {
+                margin-left: 150px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <button class="menu-btn" onclick="toggleDropdown()">☰</button>
-    <div id="dropdown-menu" class="dropdown-menu">
+    <div class="sidebar">
         <h2>Menu</h2>
-        <a href="/profile">Edit Profile</a> <!-- Link to the profile page -->
+        <a href="/profile">Edit Profile</a>
         <a href="/certificates">Certificates</a>
-        <a href="/settings">Settings</a> <!-- Link to the settings page -->
+        <form method="POST" style="margin: 0;">
+            <button type="submit" name="verify_email">Verify Email</button>
+        </form>
+        <a href="/settings">Settings</a>
         <a href="/logout">Logout</a>
     </div>
     <div class="content">

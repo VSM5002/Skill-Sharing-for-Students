@@ -39,9 +39,41 @@
         button:hover {
             background-color: #0056b3;
         }
+        .flash-message {
+            margin: 10px auto;
+            padding: 10px;
+            max-width: 600px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 16px;
+        }
+        .flash-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .flash-message.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
     </style>
 </head>
 <body>
+    <div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="flash-message {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
     <h1>Edit Profile</h1>
     <form method="POST">
         <label for="bio">Bio:</label>
@@ -56,5 +88,15 @@
         <textarea id="experience" name="experience" placeholder="Enter your work experience">{{ user[5] }}</textarea>
         <button type="submit">Save</button>
     </form>
+    <hr>
+    <h2>Email Verification</h2>
+    <p>Email: {{ user[1] }}</p>
+    {% if user[7] %}
+        <p style="color: green;">Your email is verified.</p>
+    {% else %}
+        <form method="POST">
+            <button type="submit" name="verify_email">Verify Email</button>
+        </form>
+    {% endif %}
 </body>
 </html>

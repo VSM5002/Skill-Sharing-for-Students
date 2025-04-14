@@ -1,8 +1,8 @@
-CREATE DATABASE skill_sharing;
+#CREATE DATABASE skill_sharing;
 
 USE skill_sharing;
 
-CREATE TABLE users (
+/*CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100),
     email VARCHAR(100) UNIQUE,
@@ -18,4 +18,7 @@ CREATE TABLE requests (
     receiver_id INT,
     FOREIGN KEY (sender_id) REFERENCES users(id),
     FOREIGN KEY (receiver_id) REFERENCES users(id)
-);
+);*/
+
+Select * from users;
+Select * from requests;

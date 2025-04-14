@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - MAIL_SERVER=smtp.gmail.com
+      - MAIL_PORT=587
+      - MAIL_USE_TLS=True
+      - MAIL_USERNAME=your_email@gmail.com
+      - MAIL_PASSWORD=your_app_password
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=skill_sharing
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: skill_sharing
+    ports:
+      - "3307:3306"  # Change the host port to 3307
