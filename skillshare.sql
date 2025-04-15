@@ -19,6 +19,14 @@ CREATE TABLE requests (
     FOREIGN KEY (sender_id) REFERENCES users(id),
     FOREIGN KEY (receiver_id) REFERENCES users(id)
 );*/
+CREATE TABLE skills (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    prerequisites TEXT,
+    user_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
 
 Select * from users;
 Select * from requests;

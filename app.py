@@ -143,29 +143,17 @@ def dashboard():
     if 'user_id' not in session:
         return redirect(url_for('login'))
     
-    if request.method == 'POST' and 'verify_email' in request.form:
-        # Handle email verification
-        cursor.execute("SELECT email, is_verified FROM users WHERE id = %s", (session['user_id'],))
-        user = cursor.fetchone()
-        if user and not user[1]:  # If email is not verified
-            verification_token = secrets.token_urlsafe(16)
-            cursor.execute("UPDATE users SET verification_token = %s WHERE id = %s", (verification_token, session['user_id']))
-            db.commit()
-            verification_link = url_for('verify_email', token=verification_token, _external=True)
-            msg = Message('Verify Your Email', sender=os.getenv('MAIL_USERNAME'), recipients=[user[0]])
-            msg.body = f"Hi,\n\nPlease verify your email by clicking the link below:\n{verification_link}\n\nThank you!"
-            try:
-                mail.send(msg)
-                flash('Verification email sent. Please check your inbox.', 'success')
-            except Exception as e:
-                flash(f'Failed to send verification email: {e}', 'error')
-        else:
-            flash('Your email is already verified.', 'info')
+    search_results = None
+    if request.method == 'POST' and 'search_query' in request.form:
+        # Handle search functionality
+        query = request.form['search_query']
+        cursor.execute("SELECT id, name, skills FROM users WHERE skills LIKE %s OR name LIKE %s", (f"%{query}%", f"%{query}%"))
+        search_results = cursor.fetchall()
     
     cursor.execute("SELECT name, email, is_verified FROM users WHERE id = %s", (session['user_id'],))
     user = cursor.fetchone()
     recommendations = ["C Programming", "C++ Programming", "Python Programming", "Java Programming", "JavaScript Programming", "AI & Machine Learning", "Data Science"]
-    return render_template('dashboard.html', user=user, recommendations=recommendations)
+    return render_template('dashboard.html', user=user, recommendations=recommendations, search_results=search_results)
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
@@ -217,13 +205,29 @@ def search():
     results = cursor.fetchall()
     return render_template('search.html', results=results)
 
-@app.route('/send_request/<int:receiver_id>')
+@app.route('/send_request/<int:receiver_id>', methods=['POST'])
 def send_request(receiver_id):
     if 'user_id' not in session:
         return redirect(url_for('login'))
+    # Insert the request into the requests table
     cursor.execute("INSERT INTO requests (sender_id, receiver_id) VALUES (%s, %s)", (session['user_id'], receiver_id))
     db.commit()
-    return redirect(url_for('home'))
+    flash('Request sent successfully!', 'success')
+    return redirect(url_for('search'))
+
+@app.route('/requests')
+def view_requests():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    # Fetch all requests sent to the logged-in user
+    cursor.execute("""
+        SELECT users.name, users.email, requests.id
+        FROM requests
+        JOIN users ON requests.sender_id = users.id
+        WHERE requests.receiver_id = %s
+    """, (session['user_id'],))
+    requests = cursor.fetchall()
+    return render_template('requests.html', requests=requests)
 
 @app.route('/settings', methods=['GET', 'POST'])
 def settings():
@@ -248,6 +252,73 @@ def test_email():
         return 'Test email sent successfully!'
     except Exception as e:
         return f'Failed to send email: {e}'
+
+@app.route('/skill/<int:skill_id>')
+def skill_details(skill_id):
+    # Fetch skill details from the database
+    cursor.execute("SELECT id, name, description, prerequisites FROM skills WHERE id = %s", (skill_id,))
+    skill = cursor.fetchone()
+    if not skill:
+        flash('Skill not found.', 'error')
+        return redirect(url_for('dashboard'))
+    return render_template('skill_details.html', skill=skill)
+
+@app.route('/add_skill', methods=['GET', 'POST'])
+def add_skill():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        skill_name = request.form['skill_name']
+        description = request.form['description']
+        prerequisites = request.form['prerequisites']
+        cursor.execute(
+            "INSERT INTO skills (name, description, prerequisites, user_id) VALUES (%s, %s, %s, %s)",
+            (skill_name, description, prerequisites, session['user_id'])
+        )
+        db.commit()
+        flash('Skill added successfully!', 'success')
+        return redirect(url_for('dashboard'))
+    return render_template('add_skill.html')
+
+@app.route('/add_user_skills', methods=['GET', 'POST'])
+def add_user_skills():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        skill_ids = request.form.getlist('skills')  # List of selected skill IDs
+        cursor.execute("DELETE FROM user_skills WHERE user_id = %s", (session['user_id'],))  # Clear existing skills
+        for skill_id in skill_ids:
+            cursor.execute("INSERT INTO user_skills (user_id, skill_id) VALUES (%s, %s)", (session['user_id'], skill_id))
+        db.commit()
+        flash('Skills updated successfully!', 'success')
+        return redirect(url_for('dashboard'))
+    cursor.execute("SELECT id, name FROM skills")  # Fetch all available skills
+    skills = cursor.fetchall()
+    cursor.execute("SELECT skill_id FROM user_skills WHERE user_id = %s", (session['user_id'],))  # Fetch user's skills
+    user_skills = [row[0] for row in cursor.fetchall()]
+    return render_template('add_user_skills.html', skills=skills, user_skills=user_skills)
+
+@app.route('/search_users', methods=['GET'])
+def search_users():
+    query = request.args.get('query')
+    skill_id = request.args.get('skill_id')
+    if skill_id:
+        cursor.execute("""
+            SELECT users.id, users.name, users.email
+            FROM users
+            JOIN user_skills ON users.id = user_skills.user_id
+            WHERE user_skills.skill_id = %s
+        """, (skill_id,))
+    else:
+        cursor.execute("""
+            SELECT id, name, email
+            FROM users
+            WHERE name LIKE %s OR email LIKE %s
+        """, (f"%{query}%", f"%{query}%"))
+    results = cursor.fetchall()
+    cursor.execute("SELECT id, name FROM skills")  # Fetch all skills for filtering
+    skills = cursor.fetchall()
+    return render_template('search_users.html', results=results, skills=skills)
 
 if __name__ == '__main__':
     app.run(debug=True)

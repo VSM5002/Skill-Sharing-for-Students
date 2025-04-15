@@ -1,0 +1,12 @@
+<!-- ...existing layout... -->
+<form method="POST">
+    <h3>Select Your Skills</h3>
+    {% for skill in skills %}
+        <div>
+            <input type="checkbox" name="skills" value="{{ skill[0] }}" {% if skill[0] in user_skills %}checked{% endif %}>
+            <label>{{ skill[1] }}</label>
+        </div>
+    {% endfor %}
+    <button type="submit">Save Skills</button>
+</form>
+<!-- ...existing layout... -->
