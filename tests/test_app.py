@@ -146,7 +146,8 @@ def test_forgot_password(mock_mail_send, client):
     }, follow_redirects=True)
     assert response.status_code == 200
     assert b"password reset link" in response.data
-    assert mock_mail_send.call_count == 1  # Ensure the email send method was called exactly once
+    # Ensure the email send method was called exactly once
+    assert mock_mail_send.call_count == 1, f"Expected 1 email to be sent, but {mock_mail_send.call_count} were sent."
     mock_mail_send.reset_mock()  # Reset the mock to avoid interference with other tests
 
 @patch('flask_mail.Mail.send')  # Mock the Mail.send method
@@ -187,11 +188,12 @@ def test_add_skill(mock_mail_send, client):
         'prerequisites': 'Skill Prerequisites'
     }, follow_redirects=True)
     assert response.status_code == 200
-    assert b"Skill added successfully" in response.data
+    # Check if the success message is displayed in the response
+    assert b"Skill added successfully!" in response.data, f"Expected success message not found in response: {response.data}"
     # Verify the skill is added to the database
     db.cursor().execute("SELECT * FROM skills WHERE name = %s", ('New Skill',))
     skill = db.cursor().fetchone()
-    assert skill is not None
+    assert skill is not None, "Skill was not added to the database."
     assert skill[1] == 'New Skill'  # Check the skill name
     assert skill[2] == 'Skill Description'  # Check the description
     assert skill[3] == 'Skill Prerequisites'  # Check the prerequisites
