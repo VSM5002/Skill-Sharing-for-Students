@@ -50,13 +50,20 @@
 <body>
     <div class="add-skill-container">
         <h1>Add a Skill</h1>
+        <h3>Add a New Skill</h3>
         <form method="POST">
-            <label for="skill_name">Skill Name:</label>
-            <input type="text" id="skill_name" name="skill_name" placeholder="Enter the skill name" required>
-            <label for="description">Description:</label>
-            <textarea id="description" name="description" placeholder="Enter the skill description" required></textarea>
-            <label for="prerequisites">Prerequisites:</label>
-            <textarea id="prerequisites" name="prerequisites" placeholder="Enter the prerequisites" required></textarea>
+            <div>
+                <label for="skill_name">Skill Name:</label>
+                <input type="text" id="skill_name" name="skill_name" required>
+            </div>
+            <div>
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" required></textarea>
+            </div>
+            <div>
+                <label for="prerequisites">Prerequisites:</label>
+                <textarea id="prerequisites" name="prerequisites"></textarea>
+            </div>
             <button type="submit">Add Skill</button>
         </form>
     </div>

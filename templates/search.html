@@ -45,15 +45,10 @@
 <body>
     <div class="search-container">
         <h1>Search Results</h1>
+        <h3>Search Results:</h3>
         <ul>
-            {% for user_id, name, skills in results %}
-            <li>
-                <strong>{{ name }}</strong> - {{ skills }}
-                <a href="{{ url_for('skill_details', skill_id=user_id) }}">View Details</a> <!-- Link to skill details -->
-                <form method="POST" action="{{ url_for('send_request', receiver_id=user_id) }}" style="display: inline;">
-                    <button type="submit">Send Request</button>
-                </form>
-            </li>
+            {% for user in results %}
+                <li>{{ user[0] }} - Skills: {{ user[1] }}</li>
             {% endfor %}
         </ul>
     </div>

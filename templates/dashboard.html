@@ -144,7 +144,7 @@
         <!-- Search Bar -->
         <div class="search-bar">
             <form method="POST">
-                <input type="text" name="search_query" placeholder="Search for skills or users..." required>
+                <input type="text" name="search_query" placeholder="Search for users or skills" value="{{ request.form.get('search_query', '') }}">
                 <button type="submit">Search</button>
             </form>
         </div>
@@ -152,18 +152,17 @@
         <!-- Search Results -->
         {% if search_results %}
         <div class="search-results">
-            <h2>Search Results</h2>
+            <h3>Search Results:</h3>
             <ul>
-                {% for user_id, name, skills in search_results %}
-                <li>
-                    <strong>{{ name }}</strong> - {{ skills }}
-                    <form method="POST" action="{{ url_for('send_request', receiver_id=user_id) }}" style="display: inline;">
-                        <button type="submit">Send Request</button>
-                    </form>
-                </li>
+                {% for user in search_results %}
+                <li>{{ user[1] }} - Skills: {{ user[2] }}</li>
                 {% endfor %}
             </ul>
         </div>
+        {% else %}
+        {% if request.method == 'POST' %}
+        <p>No results found for your search.</p>
+        {% endif %}
         {% endif %}
         
         <div class="recommendations">

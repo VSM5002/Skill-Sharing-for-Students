@@ -72,13 +72,13 @@ def verify_email(token):
     user = cursor.fetchone()
     if user:
         # Update the user's email as verified
-        cursor.execute("UPDATE users SET is_verified = 1, verification_token = NULL WHERE verification_token = %s", (token,))
+        cursor.execute("UPDATE users SET is_verified = 1, verification_token = NULL WHERE id = %s", (user[0],))
         db.commit()
         flash('Your email has been verified. You can now log in.', 'success')
         return redirect(url_for('login'))
     else:
         flash('Invalid or expired verification link.', 'error')
-        return redirect(url_for('profile'))
+        return redirect(url_for('main_page'))  # Redirect to main page instead of profile
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -147,7 +147,14 @@ def dashboard():
     if request.method == 'POST' and 'search_query' in request.form:
         # Handle search functionality
         query = request.form['search_query']
-        cursor.execute("SELECT id, name, skills FROM users WHERE skills LIKE %s OR name LIKE %s", (f"%{query}%", f"%{query}%"))
+        cursor.execute("""
+            SELECT users.id, users.name, GROUP_CONCAT(skills.name SEPARATOR ', ') AS skills
+            FROM users
+            LEFT JOIN user_skills ON users.id = user_skills.user_id
+            LEFT JOIN skills ON user_skills.skill_id = skills.id
+            WHERE users.name LIKE %s OR skills.name LIKE %s
+            GROUP BY users.id
+        """, (f"%{query}%", f"%{query}%"))
         search_results = cursor.fetchall()
     
     cursor.execute("SELECT name, email, is_verified FROM users WHERE id = %s", (session['user_id'],))
@@ -201,7 +208,14 @@ def profile():
 @app.route('/search', methods=['GET'])
 def search():
     query = request.args.get('query')
-    cursor.execute("SELECT name, skills FROM users WHERE skills LIKE %s OR name LIKE %s", (f"%{query}%", f"%{query}%"))
+    cursor.execute("""
+        SELECT users.name, GROUP_CONCAT(skills.name) AS skills
+        FROM users
+        LEFT JOIN user_skills ON users.id = user_skills.user_id
+        LEFT JOIN skills ON user_skills.skill_id = skills.id
+        WHERE skills.name LIKE %s OR users.name LIKE %s
+        GROUP BY users.id
+    """, (f"%{query}%", f"%{query}%"))
     results = cursor.fetchall()
     return render_template('search.html', results=results)
 
@@ -272,8 +286,8 @@ def add_skill():
         description = request.form['description']
         prerequisites = request.form['prerequisites']
         cursor.execute(
-            "INSERT INTO skills (name, description, prerequisites, user_id) VALUES (%s, %s, %s, %s)",
-            (skill_name, description, prerequisites, session['user_id'])
+            "INSERT INTO skills (name, description, prerequisites) VALUES (%s, %s, %s)",
+            (skill_name, description, prerequisites)
         )
         db.commit()
         flash('Skill added successfully!', 'success')
@@ -298,27 +312,38 @@ def add_user_skills():
     user_skills = [row[0] for row in cursor.fetchall()]
     return render_template('add_user_skills.html', skills=skills, user_skills=user_skills)
 
-@app.route('/search_users', methods=['GET'])
+@app.route('/search_users', methods=['GET', 'POST'])
 def search_users():
-    query = request.args.get('query')
-    skill_id = request.args.get('skill_id')
+    query = request.form.get('query', '') if request.method == 'POST' else request.args.get('query', '')
+    skill_id = request.form.get('skill_id') if request.method == 'POST' else request.args.get('skill_id')
+    results = []
+
     if skill_id:
+        # Search by skill ID
         cursor.execute("""
-            SELECT users.id, users.name, users.email
+            SELECT users.id, users.name, users.email, GROUP_CONCAT(skills.name SEPARATOR ', ') AS skills
             FROM users
             JOIN user_skills ON users.id = user_skills.user_id
-            WHERE user_skills.skill_id = %s
+            JOIN skills ON user_skills.skill_id = skills.id
+            WHERE skills.id = %s
+            GROUP BY users.id
         """, (skill_id,))
-    else:
+        results = cursor.fetchall()
+    elif query:
+        # Search by name or skill name
         cursor.execute("""
-            SELECT id, name, email
+            SELECT users.id, users.name, users.email, GROUP_CONCAT(skills.name SEPARATOR ', ') AS skills
             FROM users
-            WHERE name LIKE %s OR email LIKE %s
+            LEFT JOIN user_skills ON users.id = user_skills.user_id
+            LEFT JOIN skills ON user_skills.skill_id = skills.id
+            WHERE users.name LIKE %s OR skills.name LIKE %s
+            GROUP BY users.id
         """, (f"%{query}%", f"%{query}%"))
-    results = cursor.fetchall()
-    cursor.execute("SELECT id, name FROM skills")  # Fetch all skills for filtering
+        results = cursor.fetchall()
+
+    cursor.execute("SELECT id, name FROM skills")  # Fetch all skills for dropdown
     skills = cursor.fetchall()
-    return render_template('search_users.html', results=results, skills=skills)
+    return render_template('search_users.html', results=results, skills=skills, query=query, skill_id=skill_id)
 
 if __name__ == '__main__':
     app.run(debug=True)

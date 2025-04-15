@@ -1,26 +1,28 @@
 <!-- ...existing layout... -->
-<form method="GET">
-    <input type="text" name="query" placeholder="Search by name or email" value="{{ request.args.get('query', '') }}">
+<form method="POST">
+    <input type="text" name="query" placeholder="Search by name or skill" value="{{ query }}">
     <select name="skill_id">
         <option value="">-- Filter by Skill --</option>
         {% for skill in skills %}
-            <option value="{{ skill[0] }}" {% if skill[0]|string == request.args.get('skill_id', '') %}selected{% endif %}>
+            <option value="{{ skill[0] }}" {% if skill[0]|string == skill_id %}selected{% endif %}>
                 {{ skill[1] }}
             </option>
         {% endfor %}
     </select>
     <button type="submit">Search</button>
 </form>
-<table>
-    <tr>
-        <th>Name</th>
-        <th>Email</th>
-    </tr>
-    {% for user in results %}
-        <tr>
-            <td>{{ user[1] }}</td>
-            <td>{{ user[2] }}</td>
-        </tr>
-    {% endfor %}
-</table>
+
+{% if results %}
+    <h3>Search Results:</h3>
+    <ul>
+        {% for user in results %}
+            <li>
+                <strong>{{ user[1] }}</strong> ({{ user[2] }})<br>
+                Skills: {{ user[3] }}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No results found for your search.</p>
+{% endif %}
 <!-- ...existing layout... -->
