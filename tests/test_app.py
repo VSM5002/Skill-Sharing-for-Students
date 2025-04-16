@@ -135,18 +135,19 @@ def test_logout(mock_mail_send, client):
 @patch('flask_mail.Mail.send')  # Mock the Mail.send method
 def test_forgot_password(mock_mail_send, client):
     # Register a user
-    client.post('/register', data={
-        'name': 'Test User',
-        'email': 'test@example.com',
-        'password': 'password123'
-    })
+    with patch('flask_mail.Mail.send'):  # Mock email sending during registration
+        client.post('/register', data={
+            'name': 'Test User',
+            'email': 'test@example.com',
+            'password': 'password123'
+        })
     # Request password reset
     response = client.post('/forgot_password', data={
         'email': 'test@example.com'
     }, follow_redirects=True)
     assert response.status_code == 200
     assert b"password reset link" in response.data
-    # Ensure the email send method was called exactly once
+    # Ensure the email send method was called exactly once during password reset
     assert mock_mail_send.call_count == 1, f"Expected 1 email to be sent, but {mock_mail_send.call_count} were sent."
     mock_mail_send.reset_mock()  # Reset the mock to avoid interference with other tests
 
@@ -188,6 +189,8 @@ def test_add_skill(mock_mail_send, client):
         'prerequisites': 'Skill Prerequisites'
     }, follow_redirects=True)
     assert response.status_code == 200
+    # Print the response data for debugging
+    print(response.data.decode('utf-8'))  # Decode the response data to make it human-readable
     # Check if the success message is displayed in the response
     assert b"Skill added successfully!" in response.data, f"Expected success message not found in response: {response.data}"
     # Verify the skill is added to the database
