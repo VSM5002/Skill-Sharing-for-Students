@@ -290,8 +290,8 @@ def add_skill():
             (skill_name, description, prerequisites)
         )
         db.commit()
-        flash('Skill added successfully!', 'success')
-        return redirect(url_for('dashboard'))
+        flash('Skill added successfully!', 'success')  # Flash the success message
+        return redirect(url_for('dashboard'))  # Redirect to the dashboard
     return render_template('add_skill.html')
 
 @app.route('/add_user_skills', methods=['GET', 'POST'])

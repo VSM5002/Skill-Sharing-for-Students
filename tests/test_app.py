@@ -193,9 +193,11 @@ def test_add_skill(mock_mail_send, client):
     print(response.data.decode('utf-8'))  # Decode the response data to make it human-readable
     # Check if the success message is displayed in the response
     assert b"Skill added successfully!" in response.data, f"Expected success message not found in response: {response.data}"
-    # Verify the skill is added to the database
-    db.cursor().execute("SELECT * FROM skills WHERE name = %s", ('New Skill',))
-    skill = db.cursor().fetchone()
+    # Ensure the cursor is properly closed before executing the next query
+    cursor = db.cursor()  # Create a new cursor
+    cursor.execute("SELECT * FROM skills WHERE name = %s", ('New Skill',))
+    skill = cursor.fetchone()
+    cursor.close()  # Close the cursor to avoid unread result errors
     assert skill is not None, "Skill was not added to the database."
     assert skill[1] == 'New Skill'  # Check the skill name
     assert skill[2] == 'Skill Description'  # Check the description
