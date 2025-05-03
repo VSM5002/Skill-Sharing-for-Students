@@ -1,0 +1,200 @@
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+}
+
+/* Header styles */
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed; /* Fix header at the top */
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+header .nav-left {
+    display: inline-block;
+}
+
+header .nav-right {
+    display: inline-block;
+    margin-left: auto; /* Push links to the right */
+}
+
+header nav a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+header nav a:hover {
+    text-decoration: underline;
+}
+
+/* Navigation styles */
+nav {
+    margin-top: 10px;
+}
+
+/* Main content styles */
+main {
+    padding: 80px 20px; /* Add padding to avoid overlap with fixed header */
+    max-width: 800px;
+    margin: 20px auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Footer styles */
+footer {
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Button styles */
+button {
+    background-color: #001f3f; /* Dark blue button */
+    color: #ffffff; /* White text */
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #00aaff; /* Light blue hover effect */
+}
+
+.button {
+    display: inline-block;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    margin: 10px;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+/* Form styles */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 20px auto;
+    max-width: 400px;
+    background-color: #001f3f;
+    padding: 20px;
+    border-radius: 5px;
+    color: #fff;
+}
+
+form label {
+    font-weight: bold;
+}
+
+form input, form textarea, form select, form button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #001f3f;
+    color: #fff;
+}
+
+form input::placeholder, form textarea::placeholder {
+    color: #cccccc; /* Light gray placeholder */
+}
+
+form input:focus, form textarea:focus, form select:focus {
+    outline: none;
+    border-color: #00aaff; /* Light blue focus border */
+}
+
+form button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #0056b3;
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+table th, table td {
+    border: 1px solid #fff;
+    padding: 10px;
+    text-align: left;
+}
+
+table th {
+    background-color: #000;
+    color: #fff;
+}
+
+table tr:nth-child(even) {
+    background-color: #001f3f;
+}
+
+/* Progress bar styles */
+.progress-container {
+    margin: 10px 0;
+    text-align: left;
+}
+
+.progress-bar {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.progress-bar-inner {
+    height: 20px;
+    background-color: #4caf50;
+    text-align: center;
+    color: #fff;
+    line-height: 20px;
+    font-size: 14px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    main {
+        padding: 15px;
+        max-width: 90%; /* Adjust width for smaller screens */
+    }
+
+    .progress-bar {
+        max-width: 100%; /* Ensure progress bar fits smaller screens */
+    }
+}

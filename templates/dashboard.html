@@ -107,6 +107,23 @@
         .search-results li:hover {
             background: #f1f1f1;
         }
+        .progress-container {
+            background-color: #f3f3f3;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #ddd;
+        }
+        .progress-bar-inner {
+            height: 20px;
+            background-color: #4caf50;
+            text-align: center;
+            line-height: 20px;
+            color: white;
+        }
         @media (max-width: 768px) {
             .sidebar {
                 width: 200px;
@@ -148,62 +165,84 @@
         {% endif %}
     {% endwith %}
     <div class="content">
-        <h1>Welcome to Your Dashboard</h1>
-        <p>Your skills: {{ user_skills }}</p>
-        
-        <!-- Search Bar -->
-        <div class="search-bar">
-            <form method="POST">
-                <input type="text" name="search_query" placeholder="Search for users or skills" value="{{ request.form.get('search_query', '') }}">
-                <button type="submit">Search</button>
-            </form>
-        </div>
-        
-        <!-- Search Results -->
-        {% if search_results %}
-        <div class="search-results">
-            <h3>Search Results:</h3>
-            <ul>
-                {% for user in search_results %}
-                <li>{{ user[1] }} - Skills: {{ user[2] }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% else %}
-        {% if request.method == 'POST' %}
-        <p>No results found for your search.</p>
-        {% endif %}
-        {% endif %}
-        
-        <div class="recommendations">
-            <h2>Skill Recommendations</h2>
-            <div class="course">
-                <img src="/static/images/c.png" alt="C">
-                <p>C Programming</p>
+        <div style="display: flex; align-items: flex-start;">
+            <!-- Left side: Profile completion -->
+            <div style="width: 25%; padding-right: 20px;">
+                <h3>Profile Completion</h3>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-bar-inner" style="width: {{ completion_percentage }}%;">
+                            {{ completion_percentage }}%
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="course">
-                <img src="/static/images/c++.png" alt="C++">
-                <p>C++ Programming</p>
-            </div>
-            <div class="course">
-                <img src="/static/images/python.png" alt="Python">
-                <p>Python Programming</p>
-            </div>
-            <div class="course">
-                <img src="/static/images/java.png" alt="Java">
-                <p>Java Programming</p>
-            </div>
-            <div class="course">
-                <img src="/static/images/js.jpeg" alt="JavaScript">
-                <p>JavaScript Programming</p>
-            </div>
-            <div class="course">
-                <img src="/static/images/aiml.jpeg" alt="AI/ML">
-                <p>AI & Machine Learning</p>
-            </div>
-            <div class="course">
-                <img src="/static/images/ds.jpeg" alt="Data Science">
-                <p>Data Science</p>
+            <!-- Right side: Dashboard content -->
+            <div style="width: 75%;">
+                <h1>Welcome to Your Dashboard</h1>
+                <p>Your skills: {{ user_skills }}</p>
+                
+                <!-- Search Bar -->
+                <div class="search-bar">
+                    <form method="POST">
+                        <input type="text" name="search_query" placeholder="Search for users or skills" value="{{ request.form.get('search_query', '') }}">
+                        <button type="submit">Search</button>
+                    </form>
+                </div>
+                
+                <!-- Search Results -->
+                {% if search_results %}
+                <div class="search-results">
+                    <h3>Search Results:</h3>
+                    <ul>
+                        {% for user in search_results %}
+                        <li>{{ user[1] }} - Skills: {{ user[2] }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% else %}
+                {% if request.method == 'POST' %}
+                <p>No results found for your search.</p>
+                {% endif %}
+                {% endif %}
+                
+                <div class="recommendations">
+                    <h2>Skill Recommendations</h2>
+                    <div class="course">
+                        <img src="/static/images/c.png" alt="C">
+                        <p>C Programming</p>
+                    </div>
+                    <div class="course">
+                        <img src="/static/images/c++.png" alt="C++">
+                        <p>C++ Programming</p>
+                    </div>
+                    <div class="course">
+                        <img src="/static/images/python.png" alt="Python">
+                        <p>Python Programming</p>
+                    </div>
+                    <div class="course">
+                        <img src="/static/images/java.png" alt="Java">
+                        <p>Java Programming</p>
+                    </div>
+                    <div class="course">
+                        <img src="/static/images/js.jpeg" alt="JavaScript">
+                        <p>JavaScript Programming</p>
+                    </div>
+                    <div class="course">
+                        <img src="/static/images/aiml.jpeg" alt="AI/ML">
+                        <p>AI & Machine Learning</p>
+                    </div>
+                    <div class="course">
+                        <img src="/static/images/ds.jpeg" alt="Data Science">
+                        <p>Data Science</p>
+                    </div>
+                </div>
+                <div class="container">
+                    <h1>Dashboard</h1>
+                    <p>Welcome to your dashboard!</p>
+                    <a href="{{ url_for('profile') }}" class="button">View Profile</a>
+                    <a href="{{ url_for('add_skill') }}" class="button">Add Skill</a>
+                </div>
             </div>
         </div>
     </div>

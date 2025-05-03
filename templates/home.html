@@ -1,19 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Home</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <div class="container large-container">
-        <h1>Welcome to Skill Sharing Platform</h1>
-        <p>Connect with others, share your skills, and learn new ones!</p>
-        <div class="completion-bar">
-            <div class="completion-bar-inner">{{ completion_percentage }}%</div>
-        </div>
-        <p>Your profile is {{ completion_percentage }}% complete.</p>
-        <a href="/profile" class="button">Complete Your Profile</a>
-        <a href="/search" class="button">Search for Skills</a>
-    </div>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block header %}{% endblock %} <!-- Remove the header -->
+
+{% block content %}
+<h1>Welcome to the Skill Sharing Platform</h1>
+<p>Our platform connects people with skills to those who want to learn. Join us today to share your skills or learn something new!</p>
+<div>
+    <a href="{{ url_for('login') }}" class="button">Login</a>
+    <a href="{{ url_for('register') }}" class="button">Register</a>
+</div>
+{% endblock %}

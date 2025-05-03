@@ -21,12 +21,17 @@ A web application that allows users to share and learn skills. Users can registe
 
 5. **Skill-Sharing Requests**:
    - Send and manage skill-sharing requests.
+   - Accept or decline incoming requests.
 
 6. **Account Management**:
    - Delete account from the settings page.
+   - Update email and password.
 
 7. **Responsive UI**:
    - Clean and responsive design for all pages.
+
+8. **Notifications**:
+   - Receive notifications for skill-sharing requests and updates.
 
 ## Technologies Used
 
@@ -34,6 +39,7 @@ A web application that allows users to share and learn skills. Users can registe
 - **Frontend**: HTML, CSS, JavaScript
 - **Database**: MySQL
 - **Email Service**: Flask-Mail (SMTP with Gmail)
+- **Authentication**: JWT (JSON Web Tokens)
 
 ## Installation
 
@@ -43,12 +49,18 @@ A web application that allows users to share and learn skills. Users can registe
    cd skill-sharing-platform
    ```
 
-2. Install dependencies:
+2. Set up a virtual environment and activate it:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
 
-3. Set up the database:
+4. Set up the database:
    - Create a MySQL database named `skill_sharing`.
    - Run the following SQL commands to create the required tables:
      ```sql
@@ -70,27 +82,38 @@ A web application that allows users to share and learn skills. Users can registe
          id INT AUTO_INCREMENT PRIMARY KEY,
          sender_id INT,
          receiver_id INT,
+         status ENUM('pending', 'accepted', 'declined') DEFAULT 'pending',
          FOREIGN KEY (sender_id) REFERENCES users(id),
          FOREIGN KEY (receiver_id) REFERENCES users(id)
      );
+
+     CREATE TABLE notifications (
+         id INT AUTO_INCREMENT PRIMARY KEY,
+         user_id INT,
+         message TEXT,
+         is_read BOOLEAN DEFAULT FALSE,
+         FOREIGN KEY (user_id) REFERENCES users(id)
+     );
      ```
 
-4. Configure email settings:
-   - Update the email configuration in `app.py`:
-     ```python
-     app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-     app.config['MAIL_PORT'] = 587
-     app.config['MAIL_USE_TLS'] = True
-     app.config['MAIL_USERNAME'] = 'your_email@gmail.com'
-     app.config['MAIL_PASSWORD'] = 'your_app_password'
+5. Configure environment variables:
+   - Create a `.env` file in the root directory and add the following:
+     ```
+     MAIL_SERVER=smtp.gmail.com
+     MAIL_PORT=587
+     MAIL_USE_TLS=True
+     MAIL_USERNAME=your_email@gmail.com
+     MAIL_PASSWORD=your_app_password
+     SECRET_KEY=your_secret_key
+     DATABASE_URI=mysql+pymysql://username:password@localhost/skill_sharing
      ```
 
-5. Run the application:
+6. Run the application:
    ```bash
    python app.py
    ```
 
-6. Open the application in your browser:
+7. Open the application in your browser:
    ```
    http://127.0.0.1:5000/
    ```
@@ -109,11 +132,13 @@ skill-sharing-platform/
 │   ├── dashboard.html
 │   ├── forgot_password.html
 │   ├── reset_password.html
+│   ├── notifications.html
 │   └── settings.html
 ├── static/                # Static files (CSS, JS, images)
 │   ├── css/
 │   ├── js/
 │   └── images/
+├── .env                   # Environment variables
 └── README.md              # Project documentation
 ```
 
@@ -137,20 +162,36 @@ skill-sharing-platform/
 6. **Send Skill-Sharing Requests**:
    - Visit a user's profile and send a skill-sharing request.
 
-7. **Manage Account**:
-   - Edit your profile or delete your account from the settings page.
+7. **Manage Requests**:
+   - Accept or decline incoming skill-sharing requests.
+
+8. **Notifications**:
+   - View notifications for updates and requests.
+
+9. **Manage Account**:
+   - Edit your profile, update email/password, or delete your account from the settings page.
 
 ## Troubleshooting
 
 - **Email Verification Not Received**:
-  - Ensure the email configuration in `app.py` is correct.
+  - Ensure the email configuration in `.env` is correct.
   - Check your spam or promotions folder.
 
 - **Database Connection Issues**:
-  - Verify the MySQL server is running and the credentials in `app.py` are correct.
+  - Verify the MySQL server is running and the credentials in `.env` are correct.
 
 - **SMTP Authentication Error**:
   - Ensure you have enabled "App Passwords" in your Google account.
+
+## Contributing
+
+Contributions are welcome! To contribute:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature-name`).
+3. Make your changes and commit them (`git commit -m "Add feature-name"`).
+4. Push to the branch (`git push origin feature-name`).
+5. Open a pull request.
 
 ## License
 

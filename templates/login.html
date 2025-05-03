@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{% block title %}Login{% endblock %}</title>
+    <title>Login</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -9,14 +9,28 @@
             margin: 0;
             padding: 0;
             display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+        }
+        main {
+            flex: 1;
+            display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
         }
         .login-container {
             background: #ffffff;
-            padding: 20px 30px;
-            border-radius: 8px;
+            padding: 40px 50px;
+            border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             width: 100%;
             max-width: 400px;
@@ -53,39 +67,43 @@
         button:hover {
             background-color: #0056b3;
         }
-        .footer {
-            margin-top: 15px;
+        footer {
+            background-color: #f4f4f9;
+            text-align: center;
+            padding: 10px 0;
             font-size: 14px;
             color: #777;
-        }
-        .footer a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        .footer a:hover {
-            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    {% extends "base.html" %}
-
-    {% block content %}
-    <div class="login-container">
-        <h1>Login</h1>
-        <form method="POST">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" placeholder="Enter your email" required>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Enter your password" required>
-            <button type="submit">Login</button>
-        </form>
-        <div class="footer">
-            <a href="/forgot_password">Forgot Password?</a>
-            <br>
-            Don't have an account? <a href="/register">Register here</a>
+    <header>
+        <h1>Skill Sharing Platform</h1>
+    </header>
+    <main>
+        <div class="login-container">
+            <h1>Login</h1>
+            <form method="POST" action="{{ url_for('login') }}">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required placeholder="Enter your email">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required placeholder="Enter your password">
+                <button type="submit">Login</button>
+            </form>
         </div>
-    </div>
-    {% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2023 Skill Sharing Platform</p>
+    </footer>
+    <script>
+        // Check if there are any flash messages
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                alert("{{ message }}"); // Display the flash message as a popup
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </script>
 </body>
 </html>
