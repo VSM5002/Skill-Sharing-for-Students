@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add Skill</title>
+    <title>Certificates</title>
 </head>
 <body style="font-family: Arial, sans-serif; background: #f4f4f4; color: #333;">
     <div style="display: flex; height: 100vh;">
@@ -16,9 +16,10 @@
             <a href="/settings" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Settings</a>
             <a href="/logout" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Logout</a>
         </div>
+
         <!-- Main Content -->
         <div style="flex-grow: 1; padding: 20px; overflow-y: auto;">
-            <h1 style="margin-top: 0;">Add a Skill</h1>
+            <h1 style="margin-top: 0;">Your Certificates</h1>
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     <ul style="list-style: none; padding: 0;">
@@ -30,21 +31,18 @@
                     </ul>
                 {% endif %}
             {% endwith %}
-            <form method="POST">
-                <div style="margin-bottom: 15px;">
-                    <label for="skill_name" style="display: block; font-weight: bold;">Skill Name:</label>
-                    <input type="text" id="skill_name" name="skill_name" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
-                </div>
-                <div style="margin-bottom: 15px;">
-                    <label for="description" style="display: block; font-weight: bold;">Description:</label>
-                    <textarea id="description" name="description" rows="3" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
-                </div>
-                <div style="margin-bottom: 15px;">
-                    <label for="prerequisites" style="display: block; font-weight: bold;">Prerequisites:</label>
-                    <input type="text" id="prerequisites" name="prerequisites" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
-                </div>
-                <button type="submit" style="padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Add Skill</button>
-            </form>
+            {% if certificates %}
+                <ul style="list-style: none; padding: 0;">
+                    {% for cert in certificates %}
+                        <li style="background: #f9f9f9; margin-bottom: 10px; padding: 10px; border-radius: 4px; color: black;">
+                            <strong>{{ cert.name }}</strong> - {{ cert.issued_by }}<br>
+                            Issued on: {{ cert.issued_on }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No certificates found.</p>
+            {% endif %}
         </div>
     </div>
 </body>

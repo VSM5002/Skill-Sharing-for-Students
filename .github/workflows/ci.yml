@@ -35,6 +35,21 @@ jobs:
         with:
           python-version: '3.9'
 
+      - name: Wait for MySQL to be ready
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h127.0.0.1 -uroot -proot --silent; then
+              echo "MySQL is up!"
+              break
+            fi
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
+
+      - name: Set up test database schema
+        run: |
+          mysql -h127.0.0.1 -uroot -proot test_db < skillshare.sql
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip

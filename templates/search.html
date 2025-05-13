@@ -1,56 +1,65 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Search Results</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .search-container {
-            background: #ffffff;
-            padding: 20px 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 600px;
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-        li {
-            background: #f9f9f9;
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        li:hover {
-            background: #f1f1f1;
-        }
-    </style>
+    <title>Search</title>
 </head>
-<body>
-    <div class="search-container">
-        <h1>Search Results</h1>
-        <h3>Search Results:</h3>
-        <ul>
-            {% for user in results %}
-                <li>{{ user[0] }} - Skills: {{ user[1] }}</li>
-            {% endfor %}
-        </ul>
+<body style="font-family: Arial, sans-serif; background: #f4f4f4; color: #333;">
+    <div style="padding: 20px;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul style="list-style: none; padding: 0;">
+                {% for category, message in messages %}
+                    <li style="background: #e0ffe0; color: #155724; border: 1px solid #b2dfdb; padding: 10px; margin-bottom: 10px; border-radius: 4px;">
+                        {{ message }}
+                    </li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        <h1>Search</h1>
+        <form method="get" style="margin-bottom: 20px;">
+            <input type="text" name="query" placeholder="Search for users or skills" value="{{ query }}" style="padding: 8px; width: 300px;">
+            <button type="submit" style="padding: 8px 16px;">Search</button>
+        </form>
+        {% if results %}
+            {% if results.users %}
+                <h2>User Results</h2>
+                <ul>
+                {% for user in results.users %}
+                    <li>
+                        <a href="{{ url_for('profile') }}?user_id={{ user[0] }}">
+                            <strong>{{ user[1] }}</strong>
+                        </a>
+                        ({{ user[2] }})<br>
+                        Skills: {{ user[3] }}
+                        {% if user[0] != session['user_id'] %}
+                        <form method="post" action="{{ url_for('send_request') }}" style="display:inline;">
+                            <input type="hidden" name="receiver_id" value="{{ user[0] }}">
+                            <button type="submit" style="margin-left:10px;">Send Request</button>
+                        </form>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+            {% if results.skills %}
+                <h2>Skill Results</h2>
+                <ul>
+                {% for skill in results.skills %}
+                    <li>
+                        <a href="{{ url_for('skill_details', skill_id=skill[0]) }}">
+                            <strong>{{ skill[1] }}</strong>
+                        </a>
+                        <br>
+                        {{ skill[2] }}
+                    </li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+            {% if not results.users and not results.skills %}
+                <p>No results found.</p>
+            {% endif %}
+        {% endif %}
     </div>
 </body>
 </html>

@@ -183,6 +183,46 @@ skill-sharing-platform/
 - **SMTP Authentication Error**:
   - Ensure you have enabled "App Passwords" in your Google account.
 
+## Steps to run pytest
+
+1. **Install dependencies**
+   ```
+   pip install -r requirements.txt
+   ```
+
+2. **Set up your database**
+   - Make sure MySQL is running.
+   - Create and initialize your test database:
+     ```
+     mysql -u root -p test_db < skillshare.sql
+     ```
+
+3. **Set environment variables (if needed)**
+   ```
+   export DB_HOST=localhost
+   export DB_USER=root
+   export DB_PASSWORD=yourpassword
+   export DB_NAME=test_db
+   ```
+
+4. **Run pytest**
+   ```
+   pytest
+   ```
+   or to run a specific test file:
+   ```
+   pytest tests/test_app.py
+   ```
+
+5. **View results**
+   - Check the output in your terminal for test results and errors.
+
+---
+
+**Note:**  
+- Make sure your `tests/test_app.py` file exists and covers your main app features.
+- You can run `pytest` without arguments to run all tests in the `tests/` folder.
+
 ## Contributing
 
 Contributions are welcome! To contribute:

@@ -1,26 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Profile Requests</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Requests</title>
 </head>
-<body>
-    <div class="container large-container">
-        <h1>Profile Requests</h1>
-        <ul>
-            {% for name, email, request_id in requests %}
-            <li>
-                <div class="request-info">
-                    <div>
-                        <strong>{{ name }}</strong> - {{ email }}
-                    </div>
-                    <form method="POST" action="{{ url_for('accept_request', request_id=request_id) }}">
-                        <button type="submit">Accept</button>
-                    </form>
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
+<body style="font-family: Arial, sans-serif; background: #f4f4f4; color: #333;">
+    <div style="display: flex; height: 100vh;">
+        <div style="width: 220px; background-color: #333; color: white; padding: 20px;">
+            <h2>Menu</h2>
+            <a href="/homepage" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Homepage</a>
+            <a href="/profile" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Profile</a>
+            <a href="/certificates" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Certificates</a>
+            <a href="/add_skill" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Add a Skill</a>
+            <a href="/requests" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Requests</a>
+            <a href="/settings" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Settings</a>
+            <a href="/logout" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Logout</a>
+        </div>
+        <div style="flex-grow: 1; padding: 20px;">
+            <h1>Requests Received</h1>
+            {% if requests %}
+                <ul>
+                {% for req in requests %}
+                    <li>
+                        <strong>{{ req[1] }}</strong> ({{ req[2] }})<br>
+                        Status: {{ req[3] }}<br>
+                        Sent at: {{ req[4] }}
+                        {% if req[3] == 'pending' %}
+                        <form method="post" action="{{ url_for('accept_request', request_id=req[0]) }}" style="display:inline;">
+                            <button type="submit" style="margin-left:10px;">Accept</button>
+                        </form>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No requests received.</p>
+            {% endif %}
+        </div>
     </div>
 </body>
 </html>

@@ -70,15 +70,32 @@
     <div class="sidebar">
         <h2>Menu</h2>
         <a href="{{ url_for('profile') }}">Profile</a>
-        <a href="{{ url_for('dashboard') }}">Dashboard</a>
-        <a href="{{ url_for('logout') }}">Logout</a>
+        <a href="/certificates">Certificates</a>
+        <a href="/add_skill">Add a Skill</a>
+        <a href="/settings">Settings</a>
+        <a href="/logout">Logout</a>
     </div>
     <div class="content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul style="list-style: none; padding: 0;">
+                {% for category, message in messages %}
+                    <li style="background: #e0ffe0; color: #155724; border: 1px solid #b2dfdb; padding: 10px; margin-bottom: 10px; border-radius: 4px;">
+                        {{ message }}
+                    </li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        <form method="get" action="{{ url_for('search') }}" style="margin-bottom: 20px;">
+            <input type="text" name="query" placeholder="Search for users or skills" value="{{ request.args.get('query', '') }}" style="padding: 8px; width: 300px;">
+            <button type="submit" style="padding: 8px 16px;">Search</button>
+        </form>
         <h1>All Skills</h1>
         <div class="skills">
             <div class="skill-card">
                 <a href="{{ url_for('skill_details', skill_id=1) }}">
-                    <img src="https://via.placeholder.com/200x150?text=Python" alt="Python Programming">
+                    <img src="/static/images/python.jpeg" alt="Python Programming">
                     <h3>Python Programming</h3>
                 </a>
                 <p>Learn the basics of Python programming.</p>
@@ -86,7 +103,7 @@
             </div>
             <div class="skill-card">
                 <a href="{{ url_for('skill_details', skill_id=2) }}">
-                    <img src="https://via.placeholder.com/200x150?text=Web+Development" alt="Web Development">
+                    <img src="/static/images/web_development.png" alt="Web Development">
                     <h3>Web Development</h3>
                 </a>
                 <p>Build modern websites using HTML, CSS, and JavaScript.</p>
@@ -94,7 +111,7 @@
             </div>
             <div class="skill-card">
                 <a href="{{ url_for('skill_details', skill_id=3) }}">
-                    <img src="https://via.placeholder.com/200x150?text=Data+Science" alt="Data Science">
+                    <img src="/static/images/data_science.jpeg" alt="Data Science">
                     <h3>Data Science</h3>
                 </a>
                 <p>Analyze data and build machine learning models.</p>
@@ -102,7 +119,7 @@
             </div>
             <div class="skill-card">
                 <a href="{{ url_for('skill_details', skill_id=4) }}">
-                    <img src="https://via.placeholder.com/200x150?text=Graphic+Design" alt="Graphic Design">
+                    <img src="/static/images/graphic_design.jpeg" alt="Graphic Design">
                     <h3>Graphic Design</h3>
                 </a>
                 <p>Create stunning visuals using design tools.</p>
@@ -110,7 +127,7 @@
             </div>
             <div class="skill-card">
                 <a href="{{ url_for('skill_details', skill_id=5) }}">
-                    <img src="https://via.placeholder.com/200x150?text=Digital+Marketing" alt="Digital Marketing">
+                    <img src="/static/images/digital_marketing.jpeg" alt="Digital Marketing">
                     <h3>Digital Marketing</h3>
                 </a>
                 <p>Learn SEO, social media marketing, and more.</p>
@@ -118,7 +135,7 @@
             </div>
             <div class="skill-card">
                 <a href="{{ url_for('skill_details', skill_id=6) }}">
-                    <img src="https://via.placeholder.com/200x150?text=Photography" alt="Photography">
+                    <img src="/static/images/photography.jpeg" alt="Photography">
                     <h3>Photography</h3>
                 </a>
                 <p>Master the art of capturing stunning photos.</p>
@@ -126,7 +143,7 @@
             </div>
             <div class="skill-card">
                 <a href="{{ url_for('skill_details', skill_id=7) }}">
-                    <img src="https://via.placeholder.com/200x150?text=Video+Editing" alt="Video Editing">
+                    <img src="/static/images/video_editing.jpeg" alt="Video Editing">
                     <h3>Video Editing</h3>
                 </a>
                 <p>Learn to edit videos like a pro.</p>
@@ -134,7 +151,7 @@
             </div>
             <div class="skill-card">
                 <a href="{{ url_for('skill_details', skill_id=8) }}">
-                    <img src="https://via.placeholder.com/200x150?text=Public+Speaking" alt="Public Speaking">
+                    <img src="/static/images/public_speaking.jpeg" alt="Public Speaking">
                     <h3>Public Speaking</h3>
                 </a>
                 <p>Enhance your communication and presentation skills.</p>
@@ -142,7 +159,7 @@
             </div>
             <div class="skill-card">
                 <a href="{{ url_for('skill_details', skill_id=9) }}">
-                    <img src="https://via.placeholder.com/200x150?text=Cooking" alt="Cooking">
+                    <img src="/static/images/cooking.jpeg" alt="Cooking">
                     <h3>Cooking</h3>
                 </a>
                 <p>Learn to cook delicious meals.</p>
@@ -150,22 +167,172 @@
             </div>
             <div class="skill-card">
                 <a href="{{ url_for('skill_details', skill_id=10) }}">
-                    <img src="https://via.placeholder.com/200x150?text=Yoga" alt="Yoga">
+                    <img src="/static/images/yoga.jpeg" alt="Yoga">
                     <h3>Yoga</h3>
                 </a>
                 <p>Improve your flexibility and mental health.</p>
                 <p class="teachers">Teachers: Priya Sharma, Emily Davis</p>
             </div>
-            {% for i in range(11, 31) %}
             <div class="skill-card">
-                <a href="{{ url_for('skill_details', skill_id=i) }}">
-                    <img src="https://via.placeholder.com/200x150?text=Skill+{{ i }}" alt="Skill {{ i }}">
-                    <h3>Skill {{ i }}</h3>
+                <a href="{{ url_for('skill_details', skill_id=11) }}">
+                    <img src="/static/images/machine_learning.jpeg" alt="Machine Learning">
+                    <h3>Machine Learning</h3>
                 </a>
-                <p>Description for Skill {{ i }} goes here.</p>
-                <p class="teachers">Teachers: Teacher {{ i }}, Assistant {{ i }}</p>
+                <p>Learn to build predictive models using data.</p>
+                <p class="teachers">Teachers: Alice Johnson, Bob Brown</p>
             </div>
-            {% endfor %}
+            <div class="skill-card">
+                <a href="{{ url_for('skill_details', skill_id=12) }}">
+                    <img src="/static/images/blockchain.jpeg" alt="Blockchain">
+                    <h3>Blockchain</h3>
+                </a>
+                <p>Understand the fundamentals of blockchain technology.</p>
+                <p class="teachers">Teachers: Chris Wilson, Sarah Lee</p>
+            </div>
+            <div class="skill-card">
+                <a href="{{ url_for('skill_details', skill_id=13) }}">
+                    <img src="/static/images/cyberscurity.jpeg" alt="Cybersecurity">
+                    <h3>Cybersecurity</h3>
+                </a>
+                <p>Protect systems and networks from cyber threats.</p>
+                <p class="teachers">Teachers: Michael Scott, Emily Davis</p>
+            </div>
+            <div class="skill-card">
+                <a href="{{ url_for('skill_details', skill_id=14) }}">
+                    <img src="/static/images/cloud_computing.jpeg" alt="Cloud Computing">
+                    <h3>Cloud Computing</h3>
+                </a>
+                <p>Learn to deploy and manage applications in the cloud.</p>
+                <p class="teachers">Teachers: John Doe, Alice Johnson</p>
+            </div>
+            <div class="skill-card">
+                <a href="{{ url_for('skill_details', skill_id=15) }}">
+                    <img src="/static/images/devops.png" alt="DevOps">
+                    <h3>DevOps</h3>
+                </a>
+                <p>Master CI/CD pipelines and automation tools.</p>
+                <p class="teachers">Teachers: Jane Smith, Bob Brown</p>
+            </div>
+            <div class="skill-card">
+                <a href="{{ url_for('skill_details', skill_id=16) }}">
+                    <img src="/static/images/artificial_intelligence.jpeg" alt="Artificial Intelligence">
+                    <h3>Artificial Intelligence</h3>
+                </a>
+                <p>Explore AI concepts and applications.</p>
+                <p class="teachers">Teachers: Chris Wilson, Sarah Lee</p>
+            </div>
+            <div class="skill-card">
+                <a href="{{ url_for('skill_details', skill_id=17) }}">
+                    <img src="/static/images/mobile_app.jpeg" alt="Mobile App Development">
+                    <h3>Mobile App Development</h3>
+                </a>
+                <p>Create mobile apps for Android and iOS.</p>
+                <p class="teachers">Teachers: Emily Davis, Michael Scott</p>
+            </div>
+            <div class="skill-card">
+                <a href="{{ url_for('skill_details', skill_id=18) }}">
+                    <img src="/static/images/game_development.jpeg" alt="Game Development">
+                    <h3>Game Development</h3>
+                </a>
+                <p>Design and develop engaging video games.</p>
+                <p class="teachers">Teachers: Alice Johnson, Chris Wilson</p>
+            </div>
+            <div class="skill-card">
+                <a href="{{ url_for('skill_details', skill_id=19) }}">
+                    <img src="/static/images/ethical_hacking.jpeg" alt="Ethical Hacking">
+                    <h3>Ethical Hacking</h3>
+                </a>
+                <p>Learn to identify and fix security vulnerabilities.</p>
+                <p class="teachers">Teachers: Bob Brown, Sarah Lee</p>
+            </div>
+            <div class="skill-card">
+                <a href="{{ url_for('skill_details', skill_id=20) }}">
+                    <img src="/static/images/robotics.jpeg" alt="Robotics">
+                    <h3>Robotics</h3>
+                </a>
+                <p>Build and program robots for various tasks.</p>
+                <p class="teachers">Teachers: John Doe, Priya Sharma</p>
+            </div>
+            <div class="skill-card">
+                <a href="{{ url_for('skill_details', skill_id=21) }}">
+                    <img src="/static/images/3d_modeling.jpeg" alt="3D Modeling">
+                    <h3>3D Modeling</h3>
+                </a>
+                <p>Create 3D models for games and animations.</p>
+                <p class="teachers">Teachers: Jane Smith, Michael Scott</p>
+            </div>
+            <div class="skill-card">
+                <a href="{{ url_for('skill_details', skill_id=22) }}">
+                    <img src="/static/images/UI_UX.png" alt="UI/UX Design">
+                    <h3>UI/UX Design</h3>
+                </a>
+                <p>Design user-friendly interfaces and experiences.</p>
+                <p class="teachers">Teachers: Sarah Lee, Emily Davis</p>
+            </div>
+            <div class="skill-card">
+                <a href="{{ url_for('skill_details', skill_id=23) }}">
+                    <img src="/static/images/big_data.jpeg" alt="Big Data">
+                    <h3>Big Data</h3>
+                </a>
+                <p>Analyze and process large datasets efficiently.</p>
+                <p class="teachers">Teachers: Chris Wilson, Alice Johnson</p>
+            </div>
+            <div class="skill-card">
+                <a href="{{ url_for('skill_details', skill_id=24) }}">
+                    <img src="/static/images/Agumented_reality.jpeg" alt="Augmented Reality">
+                    <h3>Augmented Reality</h3>
+                </a>
+                <p>Create immersive AR experiences.</p>
+                <p class="teachers">Teachers: Bob Brown, Priya Sharma</p>
+            </div>
+            <div class="skill-card">
+                <a href="{{ url_for('skill_details', skill_id=25) }}">
+                    <img src="/static/images/virtual_reality.jpeg" alt="Virtual Reality">
+                    <h3>Virtual Reality</h3>
+                </a>
+                <p>Develop VR applications and simulations.</p>
+                <p class="teachers">Teachers: Michael Scott, Jane Smith</p>
+            </div>
+            <div class="skill-card">
+                <a href="{{ url_for('skill_details', skill_id=26) }}">
+                    <img src="/static/images/e_commerce.jpeg" alt="E-commerce">
+                    <h3>E-commerce</h3>
+                </a>
+                <p>Build and manage online stores.</p>
+                <p class="teachers">Teachers: Emily Davis, John Doe</p>
+            </div>
+            <div class="skill-card">
+                <a href="{{ url_for('skill_details', skill_id=27) }}">
+                    <img src="/static/images/content_writing.jpeg" alt="Content Writing">
+                    <h3>Content Writing</h3>
+                </a>
+                <p>Write engaging and impactful content.</p>
+                <p class="teachers">Teachers: Priya Sharma, Sarah Lee</p>
+            </div>
+            <div class="skill-card">
+                <a href="{{ url_for('skill_details', skill_id=28) }}">
+                    <img src="/static/images/animation.jpeg" alt="Animation">
+                    <h3>Animation</h3>
+                </a>
+                <p>Create stunning animations for videos and games.</p>
+                <p class="teachers">Teachers: Alice Johnson, Chris Wilson</p>
+            </div>
+            <div class="skill-card">
+                <a href="{{ url_for('skill_details', skill_id=29) }}">
+                    <img src="/static/images/music_production.jpeg" alt="Music Production">
+                    <h3>Music Production</h3>
+                </a>
+                <p>Compose and produce music tracks.</p>
+                <p class="teachers">Teachers: Bob Brown, Michael Scott</p>
+            </div>
+            <div class="skill-card">
+                <a href="{{ url_for('skill_details', skill_id=30) }}">
+                    <img src="/static/images/fitness_training.jpeg" alt="Fitness Training">
+                    <h3>Fitness Training</h3>
+                </a>
+                <p>Learn to stay fit and healthy.</p>
+                <p class="teachers">Teachers: Priya Sharma, Emily Davis</p>
+            </div>
         </div>
     </div>
 </body>
