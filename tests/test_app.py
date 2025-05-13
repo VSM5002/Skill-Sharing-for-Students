@@ -118,10 +118,13 @@ def test_login_and_homepage(client):
         host=os.environ.get('DB_HOST', 'localhost'),
         user=os.environ.get('DB_USER', 'root'),
         password=os.environ.get('DB_PASSWORD', 'root'),
-        database=os.environ.get('DB_NAME', 'test_db')
+        database=os.environ.get('DB_NAME', 'skill_sharing')
     )
     cursor = db.cursor()
-    cursor.execute("INSERT IGNORE INTO users (id, name, email, password) VALUES (999, 'Test User', 'testuser@example.com', '$pbkdf2-sha256$29000$test$testhash')")
+    # Use werkzeug to hash the password as your app expects
+    from werkzeug.security import generate_password_hash
+    hashed_password = generate_password_hash('test')
+    cursor.execute("INSERT IGNORE INTO users (id, name, email, password) VALUES (999, 'Test User', 'testuser@example.com', %s)", (hashed_password,))
     db.commit()
     resp = client.post('/login', data={'email': 'testuser@example.com', 'password': 'test'}, follow_redirects=True)
     assert b'Homepage' in resp.data or resp.status_code == 200
