@@ -48,10 +48,10 @@ jobs:
 
       - name: Set up test database schema
         run: |
-          mysql -h127.0.0.1 -uroot -proot -e "CREATE DATABASE IF NOT EXISTS skill_sharing;"
-          mysql -h127.0.0.1 -uroot -proot -D skill_sharing -e "SET FOREIGN_KEY_CHECKS=0;"
-          mysql -h127.0.0.1 -uroot -proot skill_sharing < skillshare.sql
-          mysql -h127.0.0.1 -uroot -proot -D skill_sharing -e "SET FOREIGN_KEY_CHECKS=1;"
+          mysql -h127.0.0.1 -uroot -proot -e "CREATE DATABASE IF NOT EXISTS test_db;"
+          mysql -h127.0.0.1 -uroot -proot -D test_db -e "SET FOREIGN_KEY_CHECKS=0;"
+          mysql -h127.0.0.1 -uroot -proot test_db < skillshare.sql
+          mysql -h127.0.0.1 -uroot -proot -D test_db -e "SET FOREIGN_KEY_CHECKS=1;"
 
       - name: Install dependencies
         run: |
