@@ -4,6 +4,7 @@ import pytest
 import mysql.connector
 from unittest.mock import patch
 from app import app, db
+from werkzeug.security import generate_password_hash
 
 # Add the project directory to sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -13,15 +14,14 @@ def client():
     app.config['TESTING'] = True
     app.config['WTF_CSRF_ENABLED'] = False
     app.config['DB_HOST'] = '127.0.0.1'
-    app.config['DB_USER'] = 'test_user'
-    app.config['DB_PASSWORD'] = 'test_password'
-    app.config['DB_NAME'] = 'test_db'
-    # Do NOT create or use the 'skill_sharing' database in tests, only use 'test_db'
+    app.config['DB_USER'] = 'root'
+    app.config['DB_PASSWORD'] = 'root'
+    app.config['DB_NAME'] = 'skill_sharing'
     with app.test_client() as client:
         with app.app_context():
             # Create the test database schema
-            db.cursor().execute("CREATE DATABASE IF NOT EXISTS test_db")
-            db.cursor().execute("USE test_db")
+            db.cursor().execute("CREATE DATABASE IF NOT EXISTS skill_sharing")
+            db.cursor().execute("USE skill_sharing")
             db.cursor().execute("""
                 CREATE TABLE IF NOT EXISTS users (
                     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -69,7 +69,7 @@ def client():
             """)
         yield client
         with app.app_context():
-            db.cursor().execute("DROP DATABASE test_db")
+            db.cursor().execute("DROP DATABASE skill_sharing")
 
 def test_main_page(client):
     response = client.get('/')
@@ -84,13 +84,11 @@ def test_register(mock_mail_send, client):
         'password': 'password123'
     }, follow_redirects=True)
     assert response.status_code == 200
-    # Accept both verification and login success messages, or just check for a successful registration page
     assert (
         b"verification email" in response.data or
         b"Registration successful" in response.data or
         b"Login" in response.data
     )
-    # Only assert mail send if the response indicates a verification email was sent
     if b"verification email" in response.data:
         mock_mail_send.assert_called()
 
@@ -106,7 +104,6 @@ def test_login(mock_mail_send, client):
         'password': 'password123'
     }, follow_redirects=True)
     assert response.status_code == 200
-    # Accept homepage/profile/welcome/login as valid login redirects
     assert b"Homepage" in response.data or b"Profile" in response.data or b"Welcome" in response.data or b"Login" in response.data
 
 def test_homepage_requires_login(client):
@@ -114,18 +111,16 @@ def test_homepage_requires_login(client):
     assert resp.status_code == 302  # Redirect to login
 
 def test_login_and_homepage(client):
-    db = mysql.connector.connect(
+    db_conn = mysql.connector.connect(
         host=os.environ.get('DB_HOST', 'localhost'),
         user=os.environ.get('DB_USER', 'root'),
         password=os.environ.get('DB_PASSWORD', 'root'),
         database=os.environ.get('DB_NAME', 'skill_sharing')
     )
-    cursor = db.cursor()
-    # Use werkzeug to hash the password as your app expects
-    from werkzeug.security import generate_password_hash
+    cursor = db_conn.cursor()
     hashed_password = generate_password_hash('test')
     cursor.execute("INSERT IGNORE INTO users (id, name, email, password) VALUES (999, 'Test User', 'testuser@example.com', %s)", (hashed_password,))
-    db.commit()
+    db_conn.commit()
     resp = client.post('/login', data={'email': 'testuser@example.com', 'password': 'test'}, follow_redirects=True)
     assert b'Homepage' in resp.data or resp.status_code == 200
 
@@ -137,7 +132,6 @@ def test_search(client):
     assert b'Python' in resp.data
 
 def test_enroll_skill(client):
-    # Ensure the skill exists before enrolling
     with app.app_context():
         cursor = db.cursor()
         cursor.execute("INSERT IGNORE INTO skills (id, name, description, prerequisites, user_id) VALUES (1, 'Python Programming', 'Learn Python', 'None', 999)")
@@ -149,11 +143,11 @@ def test_enroll_skill(client):
     assert b'Enrolled' in resp.data or b'Skill not found' in resp.data or resp.status_code == 200
 
 def test_send_request(client):
-    # Ensure both sender and receiver exist before sending request
     with app.app_context():
         cursor = db.cursor()
-        cursor.execute("INSERT IGNORE INTO users (id, name, email, password) VALUES (999, 'Test User', 'testuser@example.com', 'test')")
-        cursor.execute("INSERT IGNORE INTO users (id, name, email, password) VALUES (998, 'Other User', 'otheruser@example.com', 'test')")
+        hashed_password = generate_password_hash('test')
+        cursor.execute("INSERT IGNORE INTO users (id, name, email, password) VALUES (999, 'Test User', 'testuser@example.com', %s)", (hashed_password,))
+        cursor.execute("INSERT IGNORE INTO users (id, name, email, password) VALUES (998, 'Other User', 'otheruser@example.com', %s)", (hashed_password,))
         db.commit()
         cursor.close()
     with client.session_transaction() as sess:
