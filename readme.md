@@ -242,3 +242,30 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 - Flask documentation: [https://flask.palletsprojects.com/](https://flask.palletsprojects.com/)
 - Flask-Mail documentation: [https://pythonhosted.org/Flask-Mail/](https://pythonhosted.org/Flask-Mail/)
 - MySQL documentation: [https://dev.mysql.com/doc/](https://dev.mysql.com/doc/)
+
+## How to run the CI pipeline and workflow
+
+1. **Push your code to GitHub (or your remote repository):**
+   - Commit your changes:
+     ```
+     git add .
+     git commit -m "Your commit message"
+     git push origin master
+     ```
+   - The CI pipeline and workflow will run automatically on GitHub Actions for every push or pull request to the `master` branch.
+
+2. **Check the status:**
+   - Go to your repository on GitHub.
+   - Click on the "Actions" tab.
+   - You will see the running and completed workflows (e.g., "CI Pipeline" or "CI Workflow").
+   - Click on a workflow run to see logs and results.
+
+3. **If a job fails:**
+   - Click on the failed job in the Actions tab to view detailed logs and error messages.
+   - Fix the errors in your code or configuration, then push your changes again.
+
+---
+
+**Note:**  
+- The workflow files are in `.github/workflows/`.
+- No manual steps are needed to trigger the pipeline; it runs automatically on push/pull request.
