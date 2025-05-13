@@ -16,6 +16,7 @@ def client():
     app.config['DB_USER'] = 'test_user'
     app.config['DB_PASSWORD'] = 'test_password'
     app.config['DB_NAME'] = 'test_db'
+    # Do NOT create or use the 'skill_sharing' database in tests, only use 'test_db'
     with app.test_client() as client:
         with app.app_context():
             # Create the test database schema
