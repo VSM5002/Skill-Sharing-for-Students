@@ -269,3 +269,49 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 **Note:**  
 - The workflow files are in `.github/workflows/`.
 - No manual steps are needed to trigger the pipeline; it runs automatically on push/pull request.
+
+## How to upload the rest of your project to Docker
+
+1. **Make sure you have a Dockerfile**  
+   - Your Dockerfile should COPY all necessary files and folders (app code, requirements.txt, schema.sql, etc.) into the image.
+   - Example:
+     ```
+     FROM python:3.9
+     WORKDIR /app
+     COPY . .
+     RUN pip install -r requirements.txt
+     CMD ["python", "app.py"]
+     ```
+
+2. **Build the Docker image (from your project root):**
+   ```
+   docker build -t skillshare-app .
+   ```
+
+3. **Run the Docker container:**
+   ```
+   docker run -p 5000:5000 --name skillshare skillshare-app
+   ```
+
+4. **If you add new files or make changes:**
+   - Rebuild the image:
+     ```
+     docker build -t skillshare-app .
+     ```
+   - (Re)start the container:
+     ```
+     docker stop skillshare
+     docker rm skillshare
+     docker run -p 5000:5000 --name skillshare skillshare-app
+     ```
+
+5. **To upload to Docker Hub (optional):**
+   - Login: `docker login`
+   - Tag: `docker tag skillshare-app yourdockerhubusername/skillshare-app:latest`
+   - Push: `docker push yourdockerhubusername/skillshare-app:latest`
+
+---
+
+**Summary:**  
+- Make sure all files are included in your Docker build context and Dockerfile.
+- Rebuild and rerun the container after adding new files or making changes.
