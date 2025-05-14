@@ -130,7 +130,7 @@ def dashboard():
     # Fetch pending profile requests for the user
     user_requests = [req for req in profile_requests if req['receiver'] == logged_in_user and req['status'] == "pending"]
 
-    return render_template('dashboard.html', user_details=user_details, user_requests=user_requests)  # Ensure 'dashboard.html' exists
+    return render_template('dashboard.html', user_details=user_details, user_requests=user_requests)
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():

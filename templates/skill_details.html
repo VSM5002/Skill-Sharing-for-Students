@@ -4,169 +4,162 @@
     <title>{{ skill[0] }}</title>
     <style>
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(120deg, #fff6e6 0%, #ffe5e0 100%);
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(120deg, #f4f4f9 60%, #e3e6f3 100%);
+            display: flex;
         }
         .sidebar {
             width: 220px;
-            background-color: #333;
+            background: linear-gradient(180deg, #ff7043 0%, #ff9800 100%);
             color: white;
-            padding: 20px;
+            padding: 24px 18px;
             height: 100vh;
             position: fixed;
+            box-shadow: 2px 0 8px rgba(255, 112, 67, 0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
-        .sidebar a {
-            color: white;
+        .sidebar h2 {
+            color: #fff;
+            margin-top: 0;
+            margin-bottom: 24px;
+            font-size: 24px;
+            letter-spacing: 1px;
+        }
+        .sidebar a, .sidebar button {
+            color: #fff;
             text-decoration: none;
             display: block;
             margin: 10px 0;
+            padding: 10px 16px;
+            border-radius: 6px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: left;
+            transition: background 0.2s, color 0.2s;
+            width: 100%;
         }
-        .sidebar a:hover {
-            text-decoration: underline;
+        .sidebar a:hover, .sidebar button:hover {
+            background: rgba(255,255,255,0.18);
+            color: #fffde7;
         }
-        .container {
-            max-width: 900px;
-            margin: 60px auto;
-            padding: 32px;
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.12);
-            display: flex;
-            gap: 40px;
-            align-items: flex-start;
+        .sidebar .active {
+            background: #fff3e0;
+            color: #ff7043;
+            font-weight: bold;
+        }
+        /* Main content styles */
+        .main-content {
             margin-left: 240px;
+            width: 100%;
         }
-        .logo {
-            flex: 1;
-            max-width: 350px;
+        .skill-details-container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(255, 112, 67, 0.13);
+            padding: 40px 36px 32px 36px;
+        }
+        .header-section {
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 32px;
+            margin-bottom: 24px;
         }
-        .logo img {
-            width: 320px;
-            height: 220px;
+        .skill-image {
+            width: 220px;
+            height: 160px;
             object-fit: cover;
             border-radius: 12px;
-            box-shadow: 0 4px 16px rgba(44, 62, 80, 0.10);
-            background: #f4f4f4;
+            border: 2px solid #ffccbc;
+            box-shadow: 0 2px 8px rgba(255, 112, 67, 0.10);
+            background: #fff8f6;
         }
-        .details {
-            flex: 2;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+        .skill-main-info {
+            flex: 1;
         }
-        .details h1 {
-            color: #222a68;
-            font-size: 2.5rem;
-            margin-bottom: 18px;
-            letter-spacing: 1px;
+        .skill-main-info h2 {
+            color: #e65100;
+            margin: 0 0 10px 0;
         }
-        .details p {
-            font-size: 1.2rem;
-            color: #444;
-            margin-bottom: 18px;
-            line-height: 1.6;
+        .skill-main-info .desc {
+            color: #bf360c;
+            margin-bottom: 10px;
         }
-        .details .prereq {
-            font-size: 1.1rem;
-            color: #2d6a4f;
-            margin-bottom: 18px;
-            font-weight: 500;
+        .skill-main-info .prereq {
+            color: #ff7043;
+            font-size: 15px;
         }
         .teachers {
-            margin-top: 30px;
+            color: #ff7043;
+            margin-bottom: 18px;
+            font-size: 16px;
         }
-        .teachers h3 {
-            margin-bottom: 12px;
-            font-size: 1.3rem;
-            color: #1d3557;
+        .enroll-section {
+            margin: 24px 0;
+            text-align: center;
         }
-        .teachers ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        .enroll-btn {
+            display: inline-block;
+            padding: 12px 36px;
+            background: linear-gradient(90deg, #ff7043 0%, #ff9800 100%);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
         }
-        .teachers ul li {
-            font-size: 1.1rem;
-            color: #555;
-            margin-bottom: 6px;
-            padding-left: 18px;
-            position: relative;
+        .enroll-btn:hover {
+            background: linear-gradient(90deg, #ff9800 0%, #ff7043 100%);
         }
-        .teachers ul li:before {
-            content: "👤";
-            position: absolute;
-            left: 0;
+        .flash {
+            background: #fff3e0;
+            color: #d84315;
+            border: 1px solid #ffccbc;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            text-align: center;
         }
         .courses-section {
-            margin-top: 40px;
+            margin-top: 32px;
+        }
+        .courses-section h3 {
+            color: #e65100;
+            margin-bottom: 18px;
+        }
+        .courses-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
         }
         .course-card {
-            background: #f8f9fa;
+            background: #fff3e0;
+            border: 1px solid #ffccbc;
             border-radius: 10px;
-            padding: 18px 20px;
-            margin-bottom: 18px;
-            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
+            padding: 18px 16px;
+            box-shadow: 0 2px 8px rgba(255, 112, 67, 0.08);
         }
-        .course-title {
-            font-size: 1.25rem;
-            color: #1a237e;
-            margin-bottom: 10px;
+        .course-card strong {
+            color: #e65100;
+            font-size: 17px;
         }
-        .progress-bar-bg {
-            width: 100%;
-            background: #e0e0e0;
-            border-radius: 8px;
-            height: 18px;
-            margin-bottom: 10px;
-            overflow: hidden;
+        .course-card .progress {
+            color: #bf360c;
+            margin: 8px 0;
         }
-        .progress-bar-fill {
-            height: 18px;
-            background: linear-gradient(90deg, #4caf50 60%, #81c784 100%);
-            border-radius: 8px;
-            text-align: right;
-            color: #fff;
-            font-weight: bold;
-            padding-right: 8px;
-            font-size: 1rem;
-        }
-        .dropdown {
-            width: 100%;
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid #bbb;
-            font-size: 1rem;
-            margin-top: 8px;
-        }
-        @media (max-width: 900px) {
-            .container {
-                flex-direction: column;
-                align-items: center;
-                padding: 18px;
-            }
-            .logo {
-                max-width: 100%;
-                margin-bottom: 24px;
-            }
-            .logo img {
-                width: 100%;
-                max-width: 350px;
-                height: 180px;
-            }
-            .sidebar {
-                position: relative;
-                width: 100%;
-                height: auto;
-                padding: 10px;
-            }
-            .container {
-                margin-left: 0;
-            }
+        .course-card .chapters {
+            color: #ff7043;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -174,72 +167,54 @@
     <div class="sidebar">
         <h2>Menu</h2>
         <a href="/homepage">Homepage</a>
-        <a href="/profile">Profile</a>
+        <a href="/profile">Edit Profile</a>
         <a href="/certificates">Certificates</a>
         <a href="/add_skill">Add a Skill</a>
-        <a href="/requests">Requests</a>
+        <form method="POST" action="/verify_email" style="width: 100%;">
+            <button type="submit" name="verify_email">Verify Email</button>
+        </form>
         <a href="/settings">Settings</a>
         <a href="/logout">Logout</a>
     </div>
     <div class="main-content">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <ul style="list-style: none; padding: 0;">
-                {% for category, message in messages %}
-                    <li style="background: #e0ffe0; color: #155724; border: 1px solid #b2dfdb; padding: 10px; margin-bottom: 10px; border-radius: 4px;">
-                        {{ message }}
-                    </li>
-                {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
-        <div class="container">
-            <div class="logo">
-                <img src="{{ image_url }}" alt="{{ skill[0] }}">
-            </div>
-            <div class="details">
-                <h1>{{ skill[0] }}</h1>
-                <p>{{ skill[1] }}</p>
-                <div class="prereq"><strong>Prerequisites:</strong> {{ skill[2] }}</div>
-                <div class="teachers">
-                    <h3>Teacher:</h3>
-                    <ul>
+        <div class="skill-details-container">
+            <div class="header-section">
+                <img src="{{ image_url }}" alt="{{ skill[0] }}" class="skill-image">
+                <div class="skill-main-info">
+                    <h2>{{ skill[0] }}</h2>
+                    <div class="desc">{{ skill[1] }}</div>
+                    <div class="prereq"><strong>Prerequisites:</strong> {{ skill[2] }}</div>
+                    <div class="teachers"><strong>Teachers:</strong>
                         {% for teacher in teachers %}
-                        <li style="display: flex; align-items: center;">
-                            {{ teacher[0] }}
-                            {% if teacher[1] != session['user_id'] %}
-                            <form method="post" action="{{ url_for('send_request') }}" style="display:inline; margin-left:10px;">
-                                <input type="hidden" name="receiver_id" value="{{ teacher[1] }}">
-                                <button type="submit" style="padding: 4px 10px; font-size: 0.95em;">Request</button>
-                            </form>
-                            {% endif %}
-                        </li>
+                            {{ teacher[0] }}{% if not loop.last %}, {% endif %}
                         {% endfor %}
-                    </ul>
+                    </div>
                 </div>
-                <div class="courses-section">
-                    <h2 style="margin-bottom: 18px; color: #2d2d2d;">Courses</h2>
-                    <form method="POST" style="margin-bottom: 18px;">
-                        {% if is_enrolled %}
-                            <button type="button" disabled style="padding: 10px 20px; background: #4caf50; color: #fff; border: none; border-radius: 4px;">Enrolled</button>
-                        {% else %}
-                            <button type="submit" style="padding: 10px 20px; background: #007bff; color: #fff; border: none; border-radius: 4px;">Enroll in Skill</button>
-                        {% endif %}
-                    </form>
+            </div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <div class="enroll-section">
+                {% if not is_enrolled %}
+                <form method="post">
+                    <button type="submit" class="enroll-btn">Enroll in this Skill</button>
+                </form>
+                {% else %}
+                <div class="flash">You are already enrolled in this skill.</div>
+                {% endif %}
+            </div>
+            <div class="courses-section">
+                <h3>Courses</h3>
+                <div class="courses-list">
                     {% for course in courses %}
                     <div class="course-card">
-                        <div class="course-title">{{ course.title }}</div>
-                        <div class="progress-bar-bg">
-                            <div class="progress-bar-fill" style="width: {{ course.progress }}%;">
-                                {{ course.progress }}%
-                            </div>
-                        </div>
-                        <select class="dropdown">
-                            <option disabled selected>Chapters</option>
-                            {% for chapter in course.chapters %}
-                            <option>{{ chapter }}</option>
-                            {% endfor %}
-                        </select>
+                        <strong>{{ course.title }}</strong>
+                        <div class="progress">Progress: {{ course.progress }}%</div>
+                        <div class="chapters">Chapters: {{ course.chapters|join(', ') }}</div>
                     </div>
                     {% endfor %}
                 </div>

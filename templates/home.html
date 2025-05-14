@@ -1,14 +1,72 @@
-{% extends "base.html" %}
-
-{% block title %}Welcome{% endblock %}
-
-{% block header %}{% endblock %} <!-- Remove the header -->
-
-{% block content %}
-<h1>Welcome to the Skill Sharing Platform</h1>
-<p>Our platform connects people with skills to those who want to learn. Join us today to share your skills or learn something new!</p>
-<div>
-    <a href="{{ url_for('login') }}" class="button">Login</a>
-    <a href="{{ url_for('register') }}" class="button">Register</a>
-</div>
-{% endblock %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome</title>
+    <style>
+        body {
+            background: linear-gradient(120deg, #fff6e6 0%, #ffe5e0 100%);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .main-container {
+            max-width: 600px;
+            margin: 80px auto 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(255, 112, 67, 0.12);
+            padding: 48px 36px 36px 36px;
+            text-align: center;
+        }
+        h1 {
+            color: #e65100;
+            margin-bottom: 18px;
+        }
+        p {
+            color: #bf360c;
+            font-size: 18px;
+            margin-bottom: 32px;
+        }
+        .button {
+            display: inline-block;
+            margin: 0 12px;
+            padding: 12px 32px;
+            background: linear-gradient(90deg, #ff7043 0%, #ff9800 100%);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .button:hover {
+            background: linear-gradient(90deg, #ff9800 0%, #ff7043 100%);
+        }
+        footer {
+            text-align: center;
+            color: #ff7043;
+            margin-top: 40px;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <h1>Welcome to the Skill Sharing Platform</h1>
+        <p>Our platform connects people with skills to those who want to learn.<br>
+        Join us today to share your skills or learn something new!</p>
+        <div>
+            <a href="{{ url_for('login') }}" class="button">Login</a>
+            <a href="{{ url_for('register') }}" class="button">Register</a>
+        </div>
+    </div>
+    <footer>
+        &copy; 2023 Skill Sharing Platform
+    </footer>
+</body>
+</html>

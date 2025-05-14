@@ -9,24 +9,33 @@
             padding: 0;
             display: flex;
             flex-direction: column;
-            background-color: #f4f4f9;
+            background: linear-gradient(120deg, #fff6e6 0%, #ffe5e0 100%);
         }
         .sidebar {
             width: 250px;
-            background-color: #333;
+            background: linear-gradient(180deg, #ff7043 0%, #ff9800 100%);
             color: white;
             padding: 20px;
             height: 100vh;
             position: fixed;
+            box-shadow: 2px 0 8px rgba(255, 112, 67, 0.08);
+        }
+        .sidebar h2 {
+            color: #fff;
+            margin-top: 0;
         }
         .sidebar a {
-            color: white;
+            color: #fff;
             text-decoration: none;
             display: block;
             margin: 10px 0;
+            padding: 8px 0;
+            border-radius: 4px;
+            transition: background 0.2s;
         }
         .sidebar a:hover {
-            text-decoration: underline;
+            background: rgba(255,255,255,0.15);
+            text-decoration: none;
         }
         .content {
             margin-left: 270px;
@@ -38,31 +47,74 @@
             gap: 20px;
         }
         .skill-card {
-            background: white;
+            background: #fff;
             padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(255, 112, 67, 0.10);
             text-align: center;
+            border: 2px solid #ffe0b2;
+            transition: box-shadow 0.2s, border 0.2s;
+        }
+        .skill-card:hover {
+            box-shadow: 0 6px 16px rgba(255, 112, 67, 0.18);
+            border: 2px solid #ff7043;
         }
         .skill-card img {
             width: 100%;
             height: 150px;
             object-fit: cover;
             border-radius: 8px;
+            border: 2px solid #ffccbc;
         }
         .skill-card h3 {
             margin: 10px 0;
             font-size: 18px;
-            color: #333;
+            color: #e65100;
         }
         .skill-card p {
             font-size: 14px;
-            color: #555;
+            color: #bf360c;
         }
         .skill-card .teachers {
             font-size: 12px;
-            color: #777;
+            color: #ff7043;
             margin-top: 5px;
+        }
+        input[type="text"] {
+            padding: 8px;
+            width: 300px;
+            border: 1px solid #ffab91;
+            border-radius: 4px;
+            background: #fff8f6;
+            color: #bf360c;
+        }
+        button[type="submit"] {
+            padding: 8px 16px;
+            background: linear-gradient(90deg, #ff7043 0%, #ff9800 100%);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        button[type="submit"]:hover {
+            background: linear-gradient(90deg, #ff9800 0%, #ff7043 100%);
+        }
+        ul.flashes {
+            list-style: none;
+            padding: 0;
+        }
+        ul.flashes li {
+            background: #fff3e0;
+            color: #d84315;
+            border: 1px solid #ffccbc;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        h1 {
+            color: #e65100;
         }
     </style>
 </head>
@@ -72,24 +124,23 @@
         <a href="{{ url_for('profile') }}">Profile</a>
         <a href="/certificates">Certificates</a>
         <a href="/add_skill">Add a Skill</a>
+        <a href="/requests">Requests</a>
         <a href="/settings">Settings</a>
         <a href="/logout">Logout</a>
     </div>
     <div class="content">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <ul style="list-style: none; padding: 0;">
+                <ul class="flashes">
                 {% for category, message in messages %}
-                    <li style="background: #e0ffe0; color: #155724; border: 1px solid #b2dfdb; padding: 10px; margin-bottom: 10px; border-radius: 4px;">
-                        {{ message }}
-                    </li>
+                    <li>{{ message }}</li>
                 {% endfor %}
                 </ul>
             {% endif %}
         {% endwith %}
         <form method="get" action="{{ url_for('search') }}" style="margin-bottom: 20px;">
-            <input type="text" name="query" placeholder="Search for users or skills" value="{{ request.args.get('query', '') }}" style="padding: 8px; width: 300px;">
-            <button type="submit" style="padding: 8px 16px;">Search</button>
+            <input type="text" name="query" placeholder="Search for users or skills" value="{{ request.args.get('query', '') }}">
+            <button type="submit">Search</button>
         </form>
         <h1>All Skills</h1>
         <div class="skills">

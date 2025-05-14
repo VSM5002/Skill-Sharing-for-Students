@@ -4,46 +4,84 @@
     <title>Settings</title>
     <style>
         body {
+            background: linear-gradient(120deg, #fff6e6 0%, #ffe5e0 100%);
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
-            background-color: #f4f4f9;
+            padding: 0;
         }
         .settings-container {
-            max-width: 600px;
-            margin: auto;
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            margin: 60px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(255, 112, 67, 0.12);
+            padding: 32px 28px;
         }
-        h1 {
+        h2 {
+            color: #e65100;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
-        form {
-            text-align: center;
+        label {
+            color: #bf360c;
+            font-weight: bold;
         }
-        button {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 10px 15px;
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 18px 0;
+            border: 1px solid #ffab91;
             border-radius: 4px;
-            cursor: pointer;
+            background: #fff8f6;
+            color: #bf360c;
             font-size: 16px;
         }
-        button:hover {
-            background-color: #c82333;
+        button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(90deg, #ff7043 0%, #ff9800 100%);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        button[type="submit"]:hover {
+            background: linear-gradient(90deg, #ff9800 0%, #ff7043 100%);
+        }
+        .flash {
+            background: #fff3e0;
+            color: #d84315;
+            border: 1px solid #ffccbc;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
     <div class="settings-container">
-        <h1>Settings</h1>
-        <form method="POST">
-            <p>Are you sure you want to delete your account? This action cannot be undone.</p>
-            <button type="submit" name="delete_account">Delete Account</button>
+        <h2>Settings</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form method="post">
+            <!-- Add your settings fields here -->
+            <label for="email">Change Email</label>
+            <input type="email" id="email" name="email">
+
+            <label for="password">Change Password</label>
+            <input type="password" id="password" name="password">
+
+            <button type="submit">Save Changes</button>
         </form>
     </div>
 </body>

@@ -2,99 +2,210 @@
 <html>
 <head>
     <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(120deg, #fff6e6 0%, #ffe5e0 100%);
+            color: #333;
+        }
+        .sidebar {
+            width: 220px;
+            background: linear-gradient(180deg, #ff7043 0%, #ff9800 100%);
+            color: white;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            box-shadow: 2px 0 8px rgba(255, 112, 67, 0.08);
+        }
+        .sidebar h2 {
+            color: #fff;
+            margin-top: 0;
+        }
+        .sidebar a, .sidebar button {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            margin: 10px 0;
+            padding: 8px 0;
+            border-radius: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: left;
+            transition: background 0.2s;
+        }
+        .sidebar a:hover, .sidebar button:hover {
+            background: rgba(255,255,255,0.15);
+        }
+        .content {
+            margin-left: 240px;
+            padding: 32px 24px;
+        }
+        h1, h2, h3 {
+            color: #e65100;
+        }
+        .search-bar input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ffab91;
+            border-radius: 4px;
+            font-size: 16px;
+            background: #fff8f6;
+            color: #bf360c;
+        }
+        .search-bar button {
+            padding: 10px 15px;
+            background: linear-gradient(90deg, #ff7043 0%, #ff9800 100%);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-left: 10px;
+            transition: background 0.2s;
+        }
+        .search-bar button:hover {
+            background: linear-gradient(90deg, #ff9800 0%, #ff7043 100%);
+        }
+        .skill-recommendations {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .skill-recommendations > div {
+            text-align: center;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(255, 112, 67, 0.10);
+            padding: 12px;
+            width: 170px;
+        }
+        .skill-recommendations img {
+            width: 150px;
+            height: 150px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(255, 112, 67, 0.12);
+            border: 2px solid #ffccbc;
+        }
+        .pending-requests ul, .search-results ul {
+            list-style: none;
+            padding: 0;
+        }
+        .pending-requests li, .search-results li {
+            background: #fff3e0;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            color: #d84315;
+        }
+        .flashes {
+            list-style: none;
+            padding: 0;
+        }
+        .flashes li {
+            background: #fff3e0;
+            color: #d84315;
+            border: 1px solid #ffccbc;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; color: #333;">
-    <div style="display: flex; height: 100vh;">
-        <!-- Sidebar -->
-        <div style="width: 220px; background-color: #333; color: white; padding: 20px; box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);">
-            <h2 style="margin-top: 0;">Menu</h2>
-            <a href="/homepage" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Homepage</a>
-            <a href="/profile" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Edit Profile</a>
-            <a href="/certificates" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Certificates</a>
-            <a href="/add_skill" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Add a Skill</a>
-            <form method="POST" style="margin: 0;">
-                <button type="submit" name="verify_email" style="color: white; background: none; border: none; cursor: pointer; text-align: left; font-size: 16px; margin: 10px 0;">Verify Email</button>
-            </form>
-            <a href="/settings" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Settings</a>
-            <a href="/logout" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Logout</a>
-        </div>
-
-        <!-- Main Content -->
-        <div style="flex-grow: 1; padding: 20px; overflow-y: auto;">
-            <h1 style="margin-top: 0;">Welcome to Your Dashboard</h1>
-
-            <!-- Search Bar -->
-            <div style="margin-bottom: 20px;">
-                <form method="POST" style="display: flex; gap: 10px;">
-                    <input type="text" name="search_query" placeholder="Search for users or skills" value="{{ request.form.get('search_query', '') }}" style="flex-grow: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px;">
-                    <button type="submit" style="padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">Search</button>
-                </form>
-            </div>
-
-            <!-- Search Results -->
-            {% if search_results %}
-            <div style="margin-bottom: 20px;">
-                <h3>Search Results:</h3>
-                <ul style="list-style: none; padding: 0;">
-                    {% for user in search_results %}
-                    <li style="background: #f9f9f9; margin-bottom: 10px; padding: 10px; border-radius: 4px; color: black;">{{ user[1] }} - Skills: {{ user[2] }}</li>
-                    {% endfor %}
+<body>
+    <div class="sidebar">
+        <h2>Menu</h2>
+        <a href="/homepage">Homepage</a>
+        <a href="/profile">Edit Profile</a>
+        <a href="/certificates">Certificates</a>
+        <a href="/add_skill">Add a Skill</a>
+        <form method="POST" action="/verify_email">
+            <button type="submit" name="verify_email">Verify Email</button>
+        </form>
+        <a href="/settings">Settings</a>
+        <a href="/logout">Logout</a>
+    </div>
+    <div class="content">
+        <h1>Welcome to Your Dashboard</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for category, message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
                 </ul>
-            </div>
-            {% else %}
-            {% if request.method == 'POST' %}
-            <p>No results found for your search.</p>
             {% endif %}
-            {% endif %}
-
-            <!-- Skill Recommendations -->
-            <div>
-                <h2>Skill Recommendations</h2>
-                <div style="display: flex; flex-wrap: wrap; gap: 20px;">
-                    <div style="text-align: center;">
-                        <img src="/static/images/c.png" alt="C" style="width: 150px; height: 150px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-                        <p style="margin-top: 10px;">C Programming</p>
-                    </div>
-                    <div style="text-align: center;">
-                        <img src="/static/images/c++.png" alt="C++" style="width: 150px; height: 150px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-                        <p style="margin-top: 10px;">C++ Programming</p>
-                    </div>
-                    <div style="text-align: center;">
-                        <img src="/static/images/python.png" alt="Python" style="width: 150px; height: 150px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-                        <p style="margin-top: 10px;">Python Programming</p>
-                    </div>
-                    <div style="text-align: center;">
-                        <img src="/static/images/java.png" alt="Java" style="width: 150px; height: 150px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-                        <p style="margin-top: 10px;">Java Programming</p>
-                    </div>
-                    <div style="text-align: center;">
-                        <img src="/static/images/js.jpeg" alt="JavaScript" style="width: 150px; height: 150px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-                        <p style="margin-top: 10px;">JavaScript Programming</p>
-                    </div>
-                    <div style="text-align: center;">
-                        <img src="/static/images/aiml.jpeg" alt="AI/ML" style="width: 150px; height: 150px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-                        <p style="margin-top: 10px;">AI & Machine Learning</p>
-                    </div>
-                    <div style="text-align: center;">
-                        <img src="/static/images/ds.jpeg" alt="Data Science" style="width: 150px; height: 150px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-                        <p style="margin-top: 10px;">Data Science</p>
-                    </div>
+        {% endwith %}
+        <!-- Search Bar -->
+        <div class="search-bar" style="margin-bottom: 20px; display: flex; gap: 10px;">
+            <form method="POST" style="display: flex; width: 100%;">
+                <input type="text" name="search_query" placeholder="Search for users or skills" value="{{ request.form.get('search_query', '') }}">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+        <!-- Search Results -->
+        {% if search_results %}
+        <div class="search-results" style="margin-bottom: 20px;">
+            <h3>Search Results:</h3>
+            <ul>
+                {% for user in search_results %}
+                <li>{{ user[1] }} - Skills: {{ user[2] }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% elif request.method == 'POST' %}
+        <p>No results found for your search.</p>
+        {% endif %}
+        <!-- Skill Recommendations -->
+        <div>
+            <h2>Skill Recommendations</h2>
+            <div class="skill-recommendations">
+                <div>
+                    <img src="/static/images/c.png" alt="C">
+                    <p>C Programming</p>
+                </div>
+                <div>
+                    <img src="/static/images/c++.png" alt="C++">
+                    <p>C++ Programming</p>
+                </div>
+                <div>
+                    <img src="/static/images/python.png" alt="Python">
+                    <p>Python Programming</p>
+                </div>
+                <div>
+                    <img src="/static/images/java.png" alt="Java">
+                    <p>Java Programming</p>
+                </div>
+                <div>
+                    <img src="/static/images/js.jpeg" alt="JavaScript">
+                    <p>JavaScript Programming</p>
+                </div>
+                <div>
+                    <img src="/static/images/aiml.jpeg" alt="AI/ML">
+                    <p>AI & Machine Learning</p>
+                </div>
+                <div>
+                    <img src="/static/images/ds.jpeg" alt="Data Science">
+                    <p>Data Science</p>
                 </div>
             </div>
-
-            <!-- Pending Profile Requests -->
-            <div style="margin-top: 20px;">
-                <h2>Pending Profile Requests</h2>
-                {% if requests %}
-                <ul style="list-style: none; padding: 0;">
-                    {% for request in requests %}
-                    <li style="background: #f9f9f9; margin-bottom: 10px; padding: 10px; border-radius: 4px; color: black;">From: {{ request.sender }} | Sent on: {{ request.timestamp }}</li>
-                    {% endfor %}
-                </ul>
-                {% else %}
-                <p>No pending requests.</p>
-                {% endif %}
-            </div>
+        </div>
+        <!-- Pending Profile Requests -->
+        <div class="pending-requests" style="margin-top: 20px;">
+            <h2>Pending Profile Requests</h2>
+            {% if requests %}
+            <ul>
+                {% for request in requests %}
+                <li>From: {{ request.sender }} | Sent on: {{ request.timestamp }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No pending requests.</p>
+            {% endif %}
         </div>
     </div>
 </body>

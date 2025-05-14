@@ -1,317 +1,77 @@
 # Skill Sharing Platform
 
-A web application that allows users to share and learn skills. Users can register, create profiles, search for skills, send skill-sharing requests, and manage their accounts.
+A web platform for students to share and learn skills from each other.
 
 ## Features
 
-1. **User Registration and Login**:
-   - Secure registration with email verification.
-   - Login with email and password.
-   - Forgot password functionality with email-based password reset.
+- User registration and login with college email verification
+- Profile management and skill enrollment
+- Add and search for skills and users
+- Request and accept skill sharing connections
+- Track certificates and completed courses
+- Email verification and notifications
+- Modern, warm-themed UI (red/orange/white)
 
-2. **Profile Management**:
-   - Create and edit profiles with fields like bio, skills, education, and experience.
-   - Track profile completion percentage.
+## Tech Stack
 
-3. **Skill Search**:
-   - Search for users by skill name or user name.
+- Python (Flask)
+- MySQL
+- HTML/CSS (warm color palette)
+- Flask-Mail for email
+- GitHub Actions for CI
 
-4. **Skill Recommendations**:
-   - Dashboard displays recommended courses with images.
+## Setup
 
-5. **Skill-Sharing Requests**:
-   - Send and manage skill-sharing requests.
-   - Accept or decline incoming requests.
-
-6. **Account Management**:
-   - Delete account from the settings page.
-   - Update email and password.
-
-7. **Responsive UI**:
-   - Clean and responsive design for all pages.
-
-8. **Notifications**:
-   - Receive notifications for skill-sharing requests and updates.
-
-## Technologies Used
-
-- **Backend**: Flask (Python)
-- **Frontend**: HTML, CSS, JavaScript
-- **Database**: MySQL
-- **Email Service**: Flask-Mail (SMTP with Gmail)
-- **Authentication**: JWT (JSON Web Tokens)
-
-## Installation
-
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd skill-sharing-platform
+1. **Clone the repository**
+2. **Install dependencies**
    ```
-
-2. Set up a virtual environment and activate it:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. Install dependencies:
-   ```bash
    pip install -r requirements.txt
    ```
+3. **Set up environment variables**  
+   Create a `.env` file with your DB and mail settings:
+   ```
+   FLASK_SECRET_KEY=your_secret_key
+   DB_HOST=localhost
+   DB_USER=root
+   DB_PASSWORD=yourpassword
+   DB_NAME=skill_sharing
+   MAIL_SERVER=smtp.yourmail.com
+   MAIL_PORT=587
+   MAIL_USE_TLS=True
+   MAIL_USERNAME=your@email.com
+   MAIL_PASSWORD=yourpassword
+   ALLOWED_EMAIL_DOMAIN=yourcollege.edu
+   ```
+4. **Set up the database**
+   - Import `skillshare.sql` into your MySQL server.
+   - Make sure the tables for users, skills, enrolled_skills, requests, certificates, etc. exist.
 
-4. Set up the database:
-   - Create a MySQL database named `skill_sharing`.
-   - Run the following SQL commands to create the required tables:
-     ```sql
-     CREATE TABLE users (
-         id INT AUTO_INCREMENT PRIMARY KEY,
-         name VARCHAR(100),
-         email VARCHAR(100) UNIQUE,
-         password VARCHAR(255),
-         bio TEXT,
-         skills TEXT,
-         contact VARCHAR(100),
-         education TEXT,
-         experience TEXT,
-         verification_token VARCHAR(255),
-         is_verified BOOLEAN DEFAULT FALSE
-     );
-
-     CREATE TABLE requests (
-         id INT AUTO_INCREMENT PRIMARY KEY,
-         sender_id INT,
-         receiver_id INT,
-         status ENUM('pending', 'accepted', 'declined') DEFAULT 'pending',
-         FOREIGN KEY (sender_id) REFERENCES users(id),
-         FOREIGN KEY (receiver_id) REFERENCES users(id)
-     );
-
-     CREATE TABLE notifications (
-         id INT AUTO_INCREMENT PRIMARY KEY,
-         user_id INT,
-         message TEXT,
-         is_read BOOLEAN DEFAULT FALSE,
-         FOREIGN KEY (user_id) REFERENCES users(id)
-     );
-     ```
-
-5. Configure environment variables:
-   - Create a `.env` file in the root directory and add the following:
-     ```
-     MAIL_SERVER=smtp.gmail.com
-     MAIL_PORT=587
-     MAIL_USE_TLS=True
-     MAIL_USERNAME=your_email@gmail.com
-     MAIL_PASSWORD=your_app_password
-     SECRET_KEY=your_secret_key
-     DATABASE_URI=mysql+pymysql://username:password@localhost/skill_sharing
-     ```
-
-6. Run the application:
-   ```bash
+5. **Run the app**
+   ```
    python app.py
    ```
 
-7. Open the application in your browser:
-   ```
-   http://127.0.0.1:5000/
-   ```
+6. **Access the app**
+   - Open [http://localhost:5000](http://localhost:5000) in your browser.
 
-## Project Structure
+## UI/UX
 
-```
-skill-sharing-platform/
-├── app.py                 # Main Flask application
-├── requirements.txt       # Python dependencies
-├── templates/             # HTML templates
-│   ├── home.html
-│   ├── login.html
-│   ├── register.html
-│   ├── profile.html
-│   ├── dashboard.html
-│   ├── forgot_password.html
-│   ├── reset_password.html
-│   ├── notifications.html
-│   └── settings.html
-├── static/                # Static files (CSS, JS, images)
-│   ├── css/
-│   ├── js/
-│   └── images/
-├── .env                   # Environment variables
-└── README.md              # Project documentation
-```
+- The platform uses a warm color palette (red, orange, white) for a modern, inviting look.
+- All pages are styled for clarity and ease of use.
+- Sidebar navigation is consistent across main pages.
 
-## Usage
+## Testing
 
-1. **Register**:
-   - Create an account by providing your name, email, and password.
+- Automated tests run via GitHub Actions on each push to `master`.
+- To run tests locally:
+  ```
+  pytest tests/test_app.py
+  ```
 
-2. **Verify Email**:
-   - Check your email for a verification link and click it to verify your account.
+## Contribution
 
-3. **Login**:
-   - Log in using your registered email and password.
-
-4. **Complete Profile**:
-   - Add details like bio, skills, education, and experience.
-
-5. **Search for Skills**:
-   - Use the search bar to find users by skill name or user name.
-
-6. **Send Skill-Sharing Requests**:
-   - Visit a user's profile and send a skill-sharing request.
-
-7. **Manage Requests**:
-   - Accept or decline incoming skill-sharing requests.
-
-8. **Notifications**:
-   - View notifications for updates and requests.
-
-9. **Manage Account**:
-   - Edit your profile, update email/password, or delete your account from the settings page.
-
-## Troubleshooting
-
-- **Email Verification Not Received**:
-  - Ensure the email configuration in `.env` is correct.
-  - Check your spam or promotions folder.
-
-- **Database Connection Issues**:
-  - Verify the MySQL server is running and the credentials in `.env` are correct.
-
-- **SMTP Authentication Error**:
-  - Ensure you have enabled "App Passwords" in your Google account.
-
-## Steps to run pytest
-
-1. **Install dependencies**
-   ```
-   pip install -r requirements.txt
-   ```
-
-2. **Set up your database**
-   - Make sure MySQL is running.
-   - Create and initialize your test database:
-     ```
-     mysql -u root -p test_db < skillshare.sql
-     ```
-
-3. **Set environment variables (if needed)**
-   ```
-   export DB_HOST=localhost
-   export DB_USER=root
-   export DB_PASSWORD=yourpassword
-   export DB_NAME=test_db
-   ```
-
-4. **Run pytest**
-   ```
-   pytest
-   ```
-   or to run a specific test file:
-   ```
-   pytest tests/test_app.py
-   ```
-
-5. **View results**
-   - Check the output in your terminal for test results and errors.
+Pull requests are welcome! Please open an issue first to discuss changes.
 
 ---
 
-**Note:**  
-- Make sure your `tests/test_app.py` file exists and covers your main app features.
-- You can run `pytest` without arguments to run all tests in the `tests/` folder.
-
-## Contributing
-
-Contributions are welcome! To contribute:
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature-name`).
-3. Make your changes and commit them (`git commit -m "Add feature-name"`).
-4. Push to the branch (`git push origin feature-name`).
-5. Open a pull request.
-
-## License
-
-This project is licensed under the MIT License. See the `LICENSE` file for details.
-
-## Acknowledgments
-
-- Flask documentation: [https://flask.palletsprojects.com/](https://flask.palletsprojects.com/)
-- Flask-Mail documentation: [https://pythonhosted.org/Flask-Mail/](https://pythonhosted.org/Flask-Mail/)
-- MySQL documentation: [https://dev.mysql.com/doc/](https://dev.mysql.com/doc/)
-
-## How to run the CI pipeline and workflow
-
-1. **Push your code to GitHub (or your remote repository):**
-   - Commit your changes:
-     ```
-     git add .
-     git commit -m "Your commit message"
-     git push origin master
-     ```
-   - The CI pipeline and workflow will run automatically on GitHub Actions for every push or pull request to the `master` branch.
-
-2. **Check the status:**
-   - Go to your repository on GitHub.
-   - Click on the "Actions" tab.
-   - You will see the running and completed workflows (e.g., "CI Pipeline" or "CI Workflow").
-   - Click on a workflow run to see logs and results.
-
-3. **If a job fails:**
-   - Click on the failed job in the Actions tab to view detailed logs and error messages.
-   - Fix the errors in your code or configuration, then push your changes again.
-
----
-
-**Note:**  
-- The workflow files are in `.github/workflows/`.
-- No manual steps are needed to trigger the pipeline; it runs automatically on push/pull request.
-
-## How to upload the rest of your project to Docker
-
-1. **Make sure you have a Dockerfile**  
-   - Your Dockerfile should COPY all necessary files and folders (app code, requirements.txt, schema.sql, etc.) into the image.
-   - Example:
-     ```
-     FROM python:3.9
-     WORKDIR /app
-     COPY . .
-     RUN pip install -r requirements.txt
-     CMD ["python", "app.py"]
-     ```
-
-2. **Build the Docker image (from your project root):**
-   ```
-   docker build -t skillshare-app .
-   ```
-
-3. **Run the Docker container:**
-   ```
-   docker run -p 5000:5000 --name skillshare skillshare-app
-   ```
-
-4. **If you add new files or make changes:**
-   - Rebuild the image:
-     ```
-     docker build -t skillshare-app .
-     ```
-   - (Re)start the container:
-     ```
-     docker stop skillshare
-     docker rm skillshare
-     docker run -p 5000:5000 --name skillshare skillshare-app
-     ```
-
-5. **To upload to Docker Hub (optional):**
-   - Login: `docker login`
-   - Tag: `docker tag skillshare-app yourdockerhubusername/skillshare-app:latest`
-   - Push: `docker push yourdockerhubusername/skillshare-app:latest`
-
----
-
-**Summary:**  
-- Make sure all files are included in your Docker build context and Dockerfile.
-- Rebuild and rerun the container after adding new files or making changes.
+© 2023 Skill Sharing Platform

@@ -2,40 +2,106 @@
 <html>
 <head>
     <title>Requests</title>
+    <style>
+        body {
+            background: linear-gradient(120deg, #fff6e6 0%, #ffe5e0 100%);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .requests-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(255, 112, 67, 0.12);
+            padding: 36px 32px;
+        }
+        h2 {
+            color: #e65100;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 24px;
+        }
+        th, td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #ffccbc;
+            text-align: left;
+        }
+        th {
+            background: #ff7043;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background: #fff3e0;
+        }
+        tr:nth-child(odd) {
+            background: #fff8f6;
+        }
+        .flash {
+            background: #fff3e0;
+            color: #d84315;
+            border: 1px solid #ffccbc;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        .accept-btn {
+            background: linear-gradient(90deg, #ff7043 0%, #ff9800 100%);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .accept-btn:hover {
+            background: linear-gradient(90deg, #ff9800 0%, #ff7043 100%);
+        }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif; background: #f4f4f4; color: #333;">
-    <div style="display: flex; height: 100vh;">
-        <div style="width: 220px; background-color: #333; color: white; padding: 20px;">
-            <h2>Menu</h2>
-            <a href="/homepage" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Homepage</a>
-            <a href="/profile" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Profile</a>
-            <a href="/certificates" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Certificates</a>
-            <a href="/add_skill" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Add a Skill</a>
-            <a href="/requests" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Requests</a>
-            <a href="/settings" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Settings</a>
-            <a href="/logout" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Logout</a>
-        </div>
-        <div style="flex-grow: 1; padding: 20px;">
-            <h1>Requests Received</h1>
-            {% if requests %}
-                <ul>
-                {% for req in requests %}
-                    <li>
-                        <strong>{{ req[1] }}</strong> ({{ req[2] }})<br>
-                        Status: {{ req[3] }}<br>
-                        Sent at: {{ req[4] }}
-                        {% if req[3] == 'pending' %}
-                        <form method="post" action="{{ url_for('accept_request', request_id=req[0]) }}" style="display:inline;">
-                            <button type="submit" style="margin-left:10px;">Accept</button>
-                        </form>
-                        {% endif %}
-                    </li>
+<body>
+    <div class="requests-container">
+        <h2>Requests</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash">{{ message }}</div>
                 {% endfor %}
-                </ul>
-            {% else %}
-                <p>No requests received.</p>
             {% endif %}
-        </div>
+        {% endwith %}
+        <table>
+            <tr>
+                <th>Sender</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Timestamp</th>
+                <th>Action</th>
+            </tr>
+            {% for req in requests %}
+            <tr>
+                <td>{{ req[1] }}</td>
+                <td>{{ req[2] }}</td>
+                <td>{{ req[3] }}</td>
+                <td>{{ req[4] }}</td>
+                <td>
+                    {% if req[3] == 'pending' %}
+                    <form method="post" action="{{ url_for('accept_request', request_id=req[0]) }}">
+                        <button type="submit" class="accept-btn">Accept</button>
+                    </form>
+                    {% else %}
+                    Accepted
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
     </div>
 </body>
 </html>

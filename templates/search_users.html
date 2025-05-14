@@ -1,28 +1,114 @@
-<!-- ...existing layout... -->
-<form method="POST">
-    <input type="text" name="query" placeholder="Search by name or skill" value="{{ query }}">
-    <select name="skill_id">
-        <option value="">-- Filter by Skill --</option>
-        {% for skill in skills %}
-            <option value="{{ skill[0] }}" {% if skill[0]|string == skill_id %}selected{% endif %}>
-                {{ skill[1] }}
-            </option>
-        {% endfor %}
-    </select>
-    <button type="submit">Search</button>
-</form>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Users</title>
+    <style>
+        body {
+            background: linear-gradient(120deg, #fff6e6 0%, #ffe5e0 100%);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 700px;
+            margin: 50px auto;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(255, 112, 67, 0.12);
+            padding: 36px 32px;
+        }
+        h2 {
+            color: #e65100;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ffab91;
+            border-radius: 4px;
+            background: #fff8f6;
+            color: #bf360c;
+            font-size: 16px;
+        }
+        button[type="submit"] {
+            padding: 10px 20px;
+            background: linear-gradient(90deg, #ff7043 0%, #ff9800 100%);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button[type="submit"]:hover {
+            background: linear-gradient(90deg, #ff9800 0%, #ff7043 100%);
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background: #fff3e0;
+            color: #d84315;
+            border: 1px solid #ffccbc;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .flash {
+            background: #fff3e0;
+            color: #d84315;
+            border: 1px solid #ffccbc;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Search Users</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form method="POST">
+            <input type="text" name="query" placeholder="Search by name or skill" value="{{ query }}">
+            <select name="skill_id">
+                <option value="">-- Filter by Skill --</option>
+                {% for skill in skills %}
+                    <option value="{{ skill[0] }}" {% if skill[0]|string == skill_id %}selected{% endif %}>
+                        {{ skill[1] }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit">Search</button>
+        </form>
 
-{% if results %}
-    <h3>Search Results:</h3>
-    <ul>
-        {% for user in results %}
-            <li>
-                <strong>{{ user[1] }}</strong> ({{ user[2] }})<br>
-                Skills: {{ user[3] }}
-            </li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>No results found for your search.</p>
-{% endif %}
-<!-- ...existing layout... -->
+        {% if results %}
+            <h3>Search Results:</h3>
+            <ul>
+                {% for user in results %}
+                    <li>
+                        <strong>{{ user[1] }}</strong> ({{ user[2] }})<br>
+                        Skills: {{ user[3] }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No results found for your search.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

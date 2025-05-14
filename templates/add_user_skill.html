@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Verify Email</title>
+    <title>Add User Skill</title>
     <style>
         body {
             background: linear-gradient(120deg, #fff6e6 0%, #ffe5e0 100%);
@@ -9,35 +9,36 @@
             margin: 0;
             padding: 0;
         }
-        .verify-container {
+        .container {
             max-width: 430px;
             margin: 60px auto;
             background: #fff;
             border-radius: 12px;
             box-shadow: 0 4px 16px rgba(255, 112, 67, 0.12);
             padding: 32px 28px;
-            text-align: center;
         }
         h2 {
             color: #e65100;
-            margin-bottom: 24px;
-        }
-        p {
-            color: #bf360c;
-            font-size: 18px;
-            margin-bottom: 24px;
-        }
-        .flash {
-            background: #fff3e0;
-            color: #d84315;
-            border: 1px solid #ffccbc;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 16px;
             text-align: center;
+            margin-bottom: 24px;
+        }
+        label {
+            color: #bf360c;
+            font-weight: bold;
+        }
+        select, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 18px 0;
+            border: 1px solid #ffab91;
+            border-radius: 4px;
+            background: #fff8f6;
+            color: #bf360c;
+            font-size: 16px;
         }
         button[type="submit"] {
-            padding: 10px 32px;
+            width: 100%;
+            padding: 10px;
             background: linear-gradient(90deg, #ff7043 0%, #ff9800 100%);
             color: #fff;
             border: none;
@@ -51,11 +52,20 @@
         button[type="submit"]:hover {
             background: linear-gradient(90deg, #ff9800 0%, #ff7043 100%);
         }
+        .flash {
+            background: #fff3e0;
+            color: #d84315;
+            border: 1px solid #ffccbc;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <div class="verify-container">
-        <h2>Email Verification</h2>
+    <div class="container">
+        <h2>Add Skill to Your Profile</h2>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -64,8 +74,13 @@
             {% endif %}
         {% endwith %}
         <form method="post">
-            <p>Click the button below to send a verification email to your registered address.</p>
-            <button type="submit">Send Verification Email</button>
+            <label for="skill">Skill</label>
+            <select id="skill" name="skill" required>
+                {% for skill in skills %}
+                <option value="{{ skill.id }}">{{ skill.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Add Skill</button>
         </form>
     </div>
 </body>

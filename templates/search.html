@@ -2,64 +2,136 @@
 <html>
 <head>
     <title>Search</title>
+    <style>
+        body {
+            background: linear-gradient(120deg, #fff6e6 0%, #ffe5e0 100%);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 700px;
+            margin: 50px auto;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(255, 112, 67, 0.12);
+            padding: 36px 32px;
+        }
+        h2 {
+            color: #e65100;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ffab91;
+            border-radius: 4px;
+            background: #fff8f6;
+            color: #bf360c;
+            font-size: 16px;
+        }
+        button[type="submit"] {
+            padding: 10px 20px;
+            background: linear-gradient(90deg, #ff7043 0%, #ff9800 100%);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button[type="submit"]:hover {
+            background: linear-gradient(90deg, #ff9800 0%, #ff7043 100%);
+        }
+        .results-section {
+            margin-top: 24px;
+        }
+        .results-section h3 {
+            color: #e65100;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background: #fff3e0;
+            color: #d84315;
+            border: 1px solid #ffccbc;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .flash {
+            background: #fff3e0;
+            color: #d84315;
+            border: 1px solid #ffccbc;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif; background: #f4f4f4; color: #333;">
-    <div style="padding: 20px;">
+<body>
+    <div class="container">
+        <h2>Search</h2>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <ul style="list-style: none; padding: 0;">
                 {% for category, message in messages %}
-                    <li style="background: #e0ffe0; color: #155724; border: 1px solid #b2dfdb; padding: 10px; margin-bottom: 10px; border-radius: 4px;">
-                        {{ message }}
-                    </li>
+                    <div class="flash">{{ message }}</div>
                 {% endfor %}
-                </ul>
             {% endif %}
         {% endwith %}
-        <h1>Search</h1>
-        <form method="get" style="margin-bottom: 20px;">
-            <input type="text" name="query" placeholder="Search for users or skills" value="{{ query }}" style="padding: 8px; width: 300px;">
-            <button type="submit" style="padding: 8px 16px;">Search</button>
+        <form method="get">
+            <input type="text" name="query" placeholder="Search for users or skills..." value="{{ query }}">
+            <button type="submit">Search</button>
         </form>
-        {% if results %}
+        <div class="results-section">
             {% if results.users %}
-                <h2>User Results</h2>
-                <ul>
+            <h3>User Results</h3>
+            <ul>
                 {% for user in results.users %}
-                    <li>
-                        <a href="{{ url_for('profile') }}?user_id={{ user[0] }}">
-                            <strong>{{ user[1] }}</strong>
-                        </a>
-                        ({{ user[2] }})<br>
-                        Skills: {{ user[3] }}
-                        {% if user[0] != session['user_id'] %}
-                        <form method="post" action="{{ url_for('send_request') }}" style="display:inline;">
-                            <input type="hidden" name="receiver_id" value="{{ user[0] }}">
-                            <button type="submit" style="margin-left:10px;">Send Request</button>
-                        </form>
-                        {% endif %}
-                    </li>
+                <li>
+                    <a href="{{ url_for('profile') }}?user_id={{ user[0] }}">
+                        <strong>{{ user[1] }}</strong>
+                    </a>
+                    ({{ user[2] }})<br>
+                    Skills: {{ user[3] }}
+                    {% if user[0] != session['user_id'] %}
+                    <form method="post" action="{{ url_for('send_request') }}" style="display:inline;">
+                        <input type="hidden" name="receiver_id" value="{{ user[0] }}">
+                        <button type="submit" style="margin-left:10px;">Send Request</button>
+                    </form>
+                    {% endif %}
+                </li>
                 {% endfor %}
-                </ul>
+            </ul>
             {% endif %}
             {% if results.skills %}
-                <h2>Skill Results</h2>
-                <ul>
+            <h3>Skill Results</h3>
+            <ul>
                 {% for skill in results.skills %}
-                    <li>
-                        <a href="{{ url_for('skill_details', skill_id=skill[0]) }}">
-                            <strong>{{ skill[1] }}</strong>
-                        </a>
-                        <br>
-                        {{ skill[2] }}
-                    </li>
+                <li>
+                    <a href="{{ url_for('skill_details', skill_id=skill[0]) }}">
+                        <strong>{{ skill[1] }}</strong>
+                    </a>
+                    <br>
+                    {{ skill[2] }}
+                </li>
                 {% endfor %}
-                </ul>
+            </ul>
             {% endif %}
             {% if not results.users and not results.skills %}
-                <p>No results found.</p>
+            <p>No results found.</p>
             {% endif %}
-        {% endif %}
+        </div>
     </div>
 </body>
 </html>

@@ -2,70 +2,124 @@
 <html>
 <head>
     <title>Profile</title>
+    <style>
+        body {
+            background: linear-gradient(120deg, #fff6e6 0%, #ffe5e0 100%);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .profile-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(255, 112, 67, 0.12);
+            padding: 36px 32px;
+        }
+        h2 {
+            color: #e65100;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        label {
+            color: #bf360c;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="email"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 18px 0;
+            border: 1px solid #ffab91;
+            border-radius: 4px;
+            background: #fff8f6;
+            color: #bf360c;
+            font-size: 16px;
+        }
+        button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(90deg, #ff7043 0%, #ff9800 100%);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        button[type="submit"]:hover {
+            background: linear-gradient(90deg, #ff9800 0%, #ff7043 100%);
+        }
+        .enrolled-skills {
+            margin-top: 24px;
+        }
+        .enrolled-skills ul {
+            list-style: none;
+            padding: 0;
+        }
+        .enrolled-skills li {
+            background: #fff3e0;
+            color: #d84315;
+            border: 1px solid #ffccbc;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+        .flash {
+            background: #fff3e0;
+            color: #d84315;
+            border: 1px solid #ffccbc;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; color: #333;">
-    <div style="display: flex; height: 100vh;">
-        <!-- Sidebar -->
-        <div style="width: 220px; background-color: #333; color: white; padding: 20px; box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);">
-            <h2 style="margin-top: 0;">Menu</h2>
-            <a href="/homepage" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Homepage</a>
-            <a href="/certificates" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Certificates</a>
-            <a href="/add_skill" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Add a Skill</a>
-            <a href="/requests" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Requests</a>
-            <a href="/settings" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Settings</a>
-            <a href="/logout" style="color: white; text-decoration: none; display: block; margin: 10px 0;">Logout</a>
-        </div>
-        <!-- Main Content -->
-        <div style="flex-grow: 1; padding: 20px; overflow-y: auto;">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <ul style="list-style: none; padding: 0;">
-                    {% for category, message in messages %}
-                        <li style="background: #e0ffe0; color: #155724; border: 1px solid #b2dfdb; padding: 10px; margin-bottom: 10px; border-radius: 4px;">
-                            {{ message }}
-                        </li>
-                    {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endwith %}
-            <h1 style="margin-top: 0;">Your Profile</h1>
-            <div style="margin-bottom: 30px;">
-                <strong>Name:</strong> {{ user[0] }}<br>
-                <strong>Email:</strong> {{ user[1] }}<br>
-                <strong>Bio:</strong> {{ user[2] or '' }}<br>
-                <strong>Skills:</strong> {{ user[3] or '' }}<br>
-                <strong>Contact:</strong> {{ user[4] or '' }}<br>
-                <strong>Education:</strong> {{ user[5] or '' }}<br>
-                <strong>Experience:</strong> {{ user[6] or '' }}<br>
-            </div>
-            <form method="POST" action="/profile" style="margin-top: 20px;">
-                <h2>Edit Profile</h2>
-                <div style="margin-bottom: 15px;">
-                    <label for="name" style="display: block; font-weight: bold;">Name:</label>
-                    <input type="text" id="name" name="name" value="{{ user[0] }}" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
-                </div>
-                <div style="margin-bottom: 15px;">
-                    <label for="skills" style="display: block; font-weight: bold;">Skills:</label>
-                    <textarea id="skills" name="skills" rows="2" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">{{ user[3] }}</textarea>
-                </div>
-                <button type="submit" style="padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Save Changes</button>
-            </form>
-            <div style="margin-top: 30px;">
-                <h2>Enrolled Skills</h2>
-                {% if enrolled_links %}
-                    <ul>
-                    {% for link in enrolled_links %}
-                        <li>
-                            <a href="{{ url_for('skill_details', skill_id=link.skill_id) }}" style="color: #007bff; text-decoration: underline;">
-                                {{ link.skill_name }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>You have not enrolled in any skills yet.</p>
-                {% endif %}
-            </div>
+<body>
+    <div class="profile-container">
+        <h2>Your Profile</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form method="post">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" value="{{ user[0] }}" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" value="{{ user[1] }}" readonly>
+
+            <label for="bio">Bio</label>
+            <textarea id="bio" name="bio">{{ user[2] }}</textarea>
+
+            <label for="skills">Skills</label>
+            <input type="text" id="skills" name="skills" value="{{ user[3] }}">
+
+            <label for="contact">Contact</label>
+            <input type="text" id="contact" name="contact" value="{{ user[4] }}">
+
+            <label for="education">Education</label>
+            <input type="text" id="education" name="education" value="{{ user[5] }}">
+
+            <label for="experience">Experience</label>
+            <input type="text" id="experience" name="experience" value="{{ user[6] }}">
+
+            <button type="submit">Update Profile</button>
+        </form>
+        <div class="enrolled-skills">
+            <h3>Enrolled Skills</h3>
+            <ul>
+                {% for skill in enrolled_links %}
+                <li>{{ skill.skill_name }}</li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
 </body>
